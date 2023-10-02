@@ -1,5 +1,5 @@
 import "./styles.css";
-import config from "../../config";
+import { config } from "../../shared";
 import { ChannelContext } from "../../contexts/ChannelContext"
 import { useRef, useContext, useState } from "react";
 import axios from "axios";
@@ -25,15 +25,15 @@ export default function UploadForm() {
         return;
       }
       setIsLoading(true);
-      const formData = new FormData();
+      let formData = new FormData();
       formData.append('video', video.current.files[0]);
       const filePath = await axios.post(`${config.backendUrl}/upload/video`, formData,{
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
-      const formData2 = new FormData();
-      formData2.append('thumbnail', thumbnail.current.files[0]);
-      const thumbnailPath = thumbnail.current.files[0] ? await axios.post(`${config.backendUrl}/upload/thumbnail`, formData2,{
+      formData = new FormData();
+      formData.append('thumbnail', thumbnail.current.files[0]);
+      const thumbnailPath = thumbnail.current.files[0] ? await axios.post(`${config.backendUrl}/upload/thumbnail`, formData,{
         headers: { 'Content-Type': 'multipart/form-data' }
       }) : null;
 

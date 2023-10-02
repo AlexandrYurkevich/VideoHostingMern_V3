@@ -1,5 +1,5 @@
 import "./styles.css";
-import config from "../../config";
+import { config } from "../../shared";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -23,7 +23,7 @@ export default function NextVideoElement({video, showDesc}) {
   useEffect(()=> {
     const getChannel = async () => {
       try {
-        const res = await axios.get(`${config.backendUrl}/channels${video.channel}`);
+        const res = await axios.get(`${config.backendUrl}/channels/${video.channel}`);
         setChannel(res.data);
       }
       catch (err) {
@@ -35,7 +35,7 @@ export default function NextVideoElement({video, showDesc}) {
 
   return (
     <div className="next-video-element">
-      <Link className="thumbnail-container" to={`/watch/${video._id}`}>
+      <Link className="thumbnail-container" to={`/watch/${video._id}`} >
         {video.thumbnail && <img className="next-video-thumbnail" src={`${config.backendUrl}/${video.thumbnail}`} alt="thumbnail"/>}
         <video style={video.thumbnail && {display: 'none'}} className="next-video-thumbnail" src={`${config.backendUrl}/${video.videoUrl}`}
         onLoadedMetadata={(e)=>{
@@ -53,14 +53,13 @@ export default function NextVideoElement({video, showDesc}) {
             seconds = '0' + seconds;
           }
           setDuration((hours > 0 ? hours + ':' : '')+ minutes+':'+seconds)
-        }}></video>
-        <label className="thumbnail-duration">{duration}</label>
+        }}><label className="thumbnail-duration">{duration}</label></video>
       </Link>
       <div className="next-video-data">
-        <Link to={`/watch${video._id}`}>{video.title}</Link>
-        <span>{channel?.name}</span>
+        <Link to={`/watch/${video._id}`}>{video.title}</Link>
+        <Link to={`/channel/${channel?._id}`}><span>{channel?.name}</span></Link>
         <div className="video-views-date">
-          <Link to={`/channel${channel?._id}`}><span>{video.views} views</span></Link>
+          <span>{video.views} views</span>
           <span>•</span>
           <span>{timeformat(video.createdAt)}</span>
         </div>

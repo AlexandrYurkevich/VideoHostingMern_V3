@@ -1,5 +1,5 @@
 import "./styles.css";
-import config from "../../config";
+import { config } from "../../shared";
 import { ChannelContext } from "../../contexts/ChannelContext"
 import { AuthContext } from "../../contexts/AuthContext";
 import { useRef, useContext, useState, useEffect } from "react";

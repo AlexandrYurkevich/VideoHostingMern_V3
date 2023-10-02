@@ -15,7 +15,6 @@ export const getChannel = async (req,res)=>{
 
 export const getSubChannels = async (req,res)=>{
     try {
-        console.log("subs - " + req.params.id);
         const channel = await User.findById(req.params.id).select('subscribedChannels').populate('subscribedChannels');
         res.status(200).json(channel);
     }
@@ -42,13 +41,13 @@ export const addChannelVideo = async (req,res)=>{
 
 export const edit = async (req,res)=>{
     try {
-        console.log("edit - "+ req.params.id);
-        console.log(req.body);
         const update = await Channel.findByIdAndUpdate({_id: req.params.id},
-        {$set:{name: req.body.name,
-        description: req.body.description,
-        avatar: req.body.avatar,
-        header: req.body.header}},
+        {$set:{
+            name: req.body.name,
+            description: req.body.description,
+            avatar: req.body.avatar,
+            header: req.body.header
+        }},
         {new: true });
         res.status(200).json(update);
     } catch (error) { res.status(404).json({ message: error.message }) }

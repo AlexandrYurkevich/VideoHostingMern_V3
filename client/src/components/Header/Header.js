@@ -1,5 +1,5 @@
 import "./styles.css";
-import config from "../../config";
+import { config } from "../../shared";
 import { useContext, useRef } from "react";
 import { Redirect, useNavigate } from "react-router-dom";
 import { VscAccount, VscMenu } from "react-icons/vsc"

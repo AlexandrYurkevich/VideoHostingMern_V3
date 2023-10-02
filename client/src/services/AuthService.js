@@ -1,4 +1,4 @@
-import config from "../config";
+import { config } from "../shared";
 import axios from "axios";
 
 const authService = {

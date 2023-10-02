@@ -67,11 +67,12 @@ export const removeDislike = async (req, res) => {
 export const addView = async (req, res) => {
   try{
       const { userId, videoId } = req.body;
-      console.log("addview - " + videoId);
-      const updatedVideo = await Video.findByIdAndUpdate( {_id: videoId}, { $inc: { views: 1 } });
+      await Video.findByIdAndUpdate( {_id: videoId}, { $inc: { views: 1 } });
       await User.findByIdAndUpdate({_id: userId},{ $pull: { history: videoId } });
       const updatedUser = await User.findByIdAndUpdate({_id: userId},
-        { $push: { history: { $each: [videoId], $position: 0 } } }, {new: true });
+        { $push: {
+           history: { $each: [videoId], $position: 0 }
+        }}, {new: true });
       res.status(200).json(updatedUser);
   } catch (err) { res.status(500).json({message: err.message}); }
 }

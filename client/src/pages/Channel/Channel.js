@@ -5,7 +5,7 @@ import UploadForm from "../../components/UploadForm/UploadForm";
 import ChannelForm from "../../components/ChannelForm/ChannelForm";
 import { VscAccount } from "react-icons/vsc";
 import "./styles.css";
-import config from "../../config"
+import { config } from "../../shared"
 import { AuthContext } from "../../contexts/AuthContext";
 import { ChannelContext } from "../../contexts/ChannelContext";
 import { useParams, useNavigate } from "react-router-dom";

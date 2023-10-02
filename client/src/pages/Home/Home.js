@@ -1,5 +1,5 @@
 import "./styles.css";
-import config from "../../config"
+import { config } from "../../shared"
 import Header from "../../components/Header/Header"
 import GanreBar from "../../components/GanreBar/GanreBar"
 import VideoListElement from "../../components/VideoListElement/VideoListElement";
@@ -26,7 +26,6 @@ export default function Home() {
 
   const getVideosByTag = async () => {
     try {
-      console.log(`${config.backendUrl}/videos/byTag/${0}/${selectedTagType}/${selectedTagValue}`)
         const res = await axios.get(`${config.backendUrl}/videos/byTag/${0}/${selectedTagType}/${selectedTagValue}`);
         setVideoList(res.data);
     } catch (err) { console.log(err); }

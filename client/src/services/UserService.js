@@ -1,4 +1,4 @@
-import config from "../config";
+import { config } from "../shared";
 import axios from "axios";
 const userService = {
     subscribe: (userId, channelId) => {
@@ -14,6 +14,20 @@ const userService = {
           });
         })
       })
-    } 
+    },
+    addView: (userId, videoId) => {
+      return new Promise((resolve, reject)=> {
+        axios.put(`${config.backendUrl}/users/addview`, {
+          userId,
+          videoId
+        })
+        .then(res => {
+          resolve({ updatedUser: res.data })
+        })
+        .catch(err => {
+          reject(new Error(err.response.data.message));
+        });
+      })
+    }
 }
 export default userService;

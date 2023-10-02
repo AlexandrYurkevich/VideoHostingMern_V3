@@ -1,5 +1,5 @@
 import "./styles.css";
-import config from "../../config";
+import { config } from "../../shared";
 import Header from "../../components/Header/Header"
 import { HeaderProvider } from "../../contexts/HeaderContext";
 import { VscAccount } from "react-icons/vsc";

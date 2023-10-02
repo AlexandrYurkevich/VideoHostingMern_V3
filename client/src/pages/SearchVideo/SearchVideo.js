@@ -1,5 +1,5 @@
 import "./styles.css";
-import config from "../../config"
+import { config } from "../../shared"
 import Header from "../../components/Header/Header"
 import GanreBar from "../../components/GanreBar/GanreBar"
 import NextVideoElement from "../../components/NextVideoElement/NextVideoElement";
