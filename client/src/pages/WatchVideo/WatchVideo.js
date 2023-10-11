@@ -22,6 +22,7 @@ export default function WatchVideo() {
   const [channel, setChannel] = useState(null);
   const navigate = useNavigate();
   const [videoList, setVideoList] = useState([]);
+  const [commentList, setCommentList] = useState([]);
 
   const onLike = async ()=>{
     try{
@@ -116,19 +117,14 @@ export default function WatchVideo() {
   useEffect(()=>{ getVideosByTag(); }, [selectedTagType, selectedTagValue]);
 
   useEffect(()=> {
-    const getVideo = async () => {
-      try {
-        const res = await axios.get(`${config.backendUrl}/videos/${id}`);
-        setVideo(res.data);
-        const channelres = await axios.get(`${config.backendUrl}/channels/${res.data.channel}`);
-        setChannel(channelres.data);
-      }
-      catch (err) { console.log(err.response.data.message); }
-    };
-    getVideo();
+    videoService.getVideo(id)
+    .then(res => {
+      setVideo(res.video)
+      setChannel(res.channel)
+    }).catch(err => console.log(err.message))
     getVideosByTag();
 
-    setTimeout(function() { userService.addView(user?._id, id).then(res=> setUser(res.updatedUser)) }, 5000);
+    setTimeout(userService.addView(user?._id, id).then(res=> setUser(res.updatedUser)), 5000);
   }, [id]);
 
   const IsOwnerComponent =() => {
@@ -180,7 +176,7 @@ export default function WatchVideo() {
               <img className="channel-icon" src={`${config.backendUrl}/${channel?.avatar}`} alt="channel" />
               <div className="channel-data">
                 <Link to={"/channel/"+channel?._id}>{channel?.name}</Link>
-                <span>{channel?.subscribers.length}</span>
+                <span>{channel?.subscribers.length} Subs</span>
               </div>
               <IsSubComponent/>
             </div>
@@ -189,7 +185,7 @@ export default function WatchVideo() {
           <div className="video-desc">
             <div className="video-views">
               <label>{video?.views} views</label>
-              <label>{`Добавлено: ${timeformat(video?.createdAt)}`}</label>
+              <label>{`Added: ${timeformat(video?.createdAt)}`}</label>
             </div>
             <div className="tags">
               {video?.tags.map(tag =>{ return <span>#{tag}</span>; })}
@@ -198,13 +194,13 @@ export default function WatchVideo() {
               {video?.description}
             </label>
           </div>
-          {/* <div className="comment-section">
+          <div className="comment-section">
             <div className="comment-count"></div>
             <div className="comment-input"></div>
             <div className="comment-list">
-
+              {commentList?.map(comment =>{ return <label>ffsfsf</label> })}
             </div>
-          </div> */}
+          </div>
         </div>
         <div className="next-video-bar">
           <GanreBar tags={video?.tags} author={channel}/>
