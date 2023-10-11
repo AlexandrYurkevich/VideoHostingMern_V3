@@ -5,12 +5,12 @@ const userSchema = mongoose.Schema(
     {
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true },
-        birthday: { type: Date, default: Date.now },
-        subscribedChannels: [{ type: Schema.Types.ObjectId, ref: 'Channel' }],
-        history: [{ type: Schema.Types.ObjectId, ref: 'Video' }],
-        liked: [{ type: Schema.Types.ObjectId, ref: 'Video' }],
-        disliked: [{ type: Schema.Types.ObjectId, ref: 'Video' }]
-    }
+        language: String,
+        notifications: { type: Boolean, default: true },
+        sex: Boolean,
+        res_mail: String,
+        birthdate: Date,
+    },{ timestamps: true }
 )
 
 const User = mongoose.model('User', userSchema)
