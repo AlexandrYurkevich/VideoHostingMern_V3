@@ -13,10 +13,10 @@ const router = express.Router();
 router.get('/:id', getVideo);
 router.post('/', addVideo);
 router.delete('/:id', deleteVideo);
-router.get('/byTag/:index/:stype/:svalue', getVideosByTag);
-router.get('/history/:userId/:index', getVideosHistory); 
-router.get('/byChannel/:channelId/:index', getVideosByChannel); 
-router.get('/liked/:userid/:index', getLikedVideos); 
-router.get('/search/search', getSearch); 
+router.get('/byTag', getVideosByTag);
+router.get('/history', getVideosHistory); 
+router.get('/byChannel', getVideosByChannel); 
+router.get('/liked', getLikedVideos); 
+router.get('/search', getSearch); 
 
 export default router;

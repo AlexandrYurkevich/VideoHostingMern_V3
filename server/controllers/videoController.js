@@ -2,13 +2,6 @@ import Video from "../models/Video.js";
 import express from 'express';
 import User from "../models/User.js";
 import Channel from "../models/Channel.js";
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const router = express.Router();
 
@@ -26,7 +19,6 @@ export const addVideo = async (req,res)=>{
     res.status(201).json(video);
   }
   catch (error) {
-    console.log(error.message);
     res.status(400).json({ message: error.message });
   }
 }
@@ -35,20 +27,8 @@ export const addVideo = async (req,res)=>{
 
 export const deleteVideo = async (req,res)=>{
   try {
-    const videoId = req.params.id;
-    const video = await Video.findById(videoId);
-    fs.unlinkSync(path.join(__dirname, 'public', video.videoUrl).replace("\\server\\controllers\\public\\","\\server\\public\\"))
-    video.thumbnail && fs.unlinkSync(path.join(__dirname, 'public', video.thumbnail).replace("\\server\\controllers\\public\\","\\server\\public\\"))
-    const users = await User.updateMany(
-      { $or: [{ history: { $elemMatch: { $eq: videoId } } }, { liked: { $elemMatch: { $eq: videoId } } },
-      { disliked: { $elemMatch: { $eq: videoId } } }] }, { $pull: { history: videoId, liked: videoId, disliked: videoId } }
-    );
-    const channels = await Channel.updateMany(
-      { videos: { $elemMatch: { $eq: videoId } } },
-      { $pull: { videos: videoId } }
-    );
-    const videodel = await Video.findByIdAndDelete(videoId);
-    res.status(200).json(videodel);
+    const videoDeleted = await Video.findByIdAndDelete(req.params.id);
+    res.status(200).json(videoDeleted);
   }
   catch (error) { res.status(404).json({ message: error.message }) }
 }
@@ -65,8 +45,6 @@ export const getVideo = async (req,res)=>{
 export const getVideosByChannel = async (req,res)=>{
     try {
       const videos = await Video.find({channel: req.params.channelId}).skip(req.params.index).limit(20);
-      if(videos.length == 0)
-        return res.status(400).json("No videos")
       res.status(200).json(videos);
     }
     catch (error) {
@@ -85,7 +63,6 @@ export const getVideosByTag = async (req,res)=>{
       case "bychannel": videos = await Video.find({ channel: svalue}).skip(req.params.index).limit(20); break;
       default: console.log("fallback"); break;
     }
-    if(videos.length == 0){ return res.status(400).json("No videos")}
     res.status(200).json(videos);
   }
   catch (error) { res.status(404).json({ message: error.message }) }
@@ -94,8 +71,6 @@ export const getVideosByTag = async (req,res)=>{
 export const getLikedVideos = async (req,res)=>{
   try {
       const videos = await User.findById(req.params.userid).select('liked').populate('liked').skip(req.params.index).limit(20);
-      if(videos.length == 0)
-        return res.status(400).json("No videos")
       res.status(200).json(videos);
   }
   catch (error) { res.status(404).json({ message: error.message }) }
@@ -104,8 +79,6 @@ export const getLikedVideos = async (req,res)=>{
 export const getVideosHistory = async (req,res)=>{
   try {
       const videos = await User.findById(req.params.userId).select('history').populate('history').skip(req.params.index).limit(20);
-      if(videos.length == 0)
-        return res.status(400).json("No videos")
       res.status(200).json(videos);
   }
   catch (error) { res.status(404).json({ message: error.message }) }
@@ -129,16 +102,10 @@ export const getSearch = async (req,res)=>{
         break;
       default:
         results = await Video.find(
-          { $or: [ 
-            {title: regex },
-            {description: regex},
-            { tags: { $elemMatch: { $regex: regex } } }
-            ] 
+          { $or: [{title: regex }, {description: regex},{ tags: { $elemMatch: { $regex: regex } } }] 
           }).skip(req.query.index).limit(20);
         break;
     }
-    if(results.length == 0)
-      return res.status(400).json("No videos")
     res.status(200).json(results);
   }
   catch (error) { res.status(404).json({ message: error.message }) }

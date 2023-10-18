@@ -8,7 +8,7 @@ import {
 const router = express.Router();
 
 router.get('/:userId', getUser);
-router.get('/:userId/channel', getChannel);
+router.get('/channel/:userId', getChannel);
 router.put('/addview', addView);
 router.put('/addlike', addLike);
 router.put('/removelike', removeLike);
