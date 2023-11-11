@@ -18,13 +18,22 @@ export default function SearchVideo() {
 
   const onEndPage = async () => {
     try {
-      const res = await axios.get(`${config.backendUrl}/videos/search/search`
+      const res = await axios.get(`${config.backendUrl}/search`
       ,{
         params: {
-          pattern: location.state.pattern, 
+          search_pattern: location.state.pattern,
           index: videoList.length,
-          stype: selectedTagType,
-          svalue: selectedTagValue
+          filter: {
+            by_date: "",
+            by_type: "",
+            by_durartion: "",
+            by_tag: ""
+          },
+          sort: {
+            by_date: "",
+            by_like_ratio: "",
+            by_views: ""
+          }
         }
       });
       setVideoList([...videoList, ...res.data]);
@@ -36,7 +45,7 @@ export default function SearchVideo() {
 
   const getVideosSearch = async () => {
     try {
-      const res = await axios.get(`${config.backendUrl}/videos/search/search`
+      const res = await axios.get(`${config.backendUrl}/videos/search`
       ,{
         params: {
           pattern: location.state.pattern,

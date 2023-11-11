@@ -1,29 +1,17 @@
 import "./styles.css";
-import { config } from "../../shared";
+import { config, timeformat } from "../../shared";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
 export default function NextVideoElement({video, showDesc}) {
-  const [channel, setChannel] = useState(null);
+  const [channel, setChannel] = useState(video.channel);
   const [duration, setDuration] =  useState("");
-
-  const timeformat = (timestamp)=> {
-    const date = new Date(timestamp);
-
-    const hours = date.getUTCHours().toString().padStart(2, '0');
-    const minutes = date.getUTCMinutes().toString().padStart(2, '0');
-    const day = date.getUTCDate().toString().padStart(2, '0');
-    const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
-
-    const formattedTimestamp = `${hours}:${minutes} ${day}.${month}`;
-    return formattedTimestamp;
-  }
   
   useEffect(()=> {
     const getChannel = async () => {
       try {
-        const res = await axios.get(`${config.backendUrl}/channels/${video.channel}`);
+        const res = await axios.get(`${config.backendUrl}/channels/${video.channel_id}`);
         setChannel(res.data);
       }
       catch (err) {

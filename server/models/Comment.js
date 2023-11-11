@@ -4,7 +4,7 @@ const CommentSchema = mongoose.Schema(
 {
   video_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Video', required: true },
   channel_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Channel', required: true },
-  parent_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Comment', required: true },
+  parent_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' },
   text: String
 },{ timestamps: true }
 )

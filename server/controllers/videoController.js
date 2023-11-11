@@ -11,9 +11,9 @@ export const addVideo = async (req,res)=>{
       title: req.body.title,
       description: req.body.description,
       videoUrl: req.body.videoUrl,
-      thumbnail: req.body.thumbnail,
+      thumbnailUrl: req.body.thumbnailUrl,
       tags: req.body.tags.split(/[\s,-.;]+/).filter(element => element),
-      channel: req.body.channel
+      channel_id: req.body.channel_id
     });
     const video = await newVideo.save();
     res.status(201).json(video);
@@ -44,7 +44,8 @@ export const getVideo = async (req,res)=>{
 
 export const getVideosByChannel = async (req,res)=>{
     try {
-      const videos = await Video.find({channel: req.params.channelId}).skip(req.params.index).limit(20);
+      const { channel_id, offset } = req.query
+      const videos = await Video.find({channel_id}).skip(offset).limit(20);
       res.status(200).json(videos);
     }
     catch (error) {
@@ -53,14 +54,14 @@ export const getVideosByChannel = async (req,res)=>{
 }
 export const getVideosByTag = async (req,res)=>{
   try {
-    const { stype, svalue } = req.params;
+    const { selectedTagType, selectedTagValue, index, offset } = req.query;
     let videos = null;
-    switch (stype) {
-      case "all": videos = await Video.find().skip(req.params.index).limit(10); break;
-      case "byviews": videos = await Video.find().sort({views: -1}).skip(req.params.index).limit(20); break;
-      case "bydate": videos = await Video.find().sort({createdAt: -1}).skip(req.params.index).limit(20); break;
-      case "bytag": videos = await Video.find({ tags: { $elemMatch: { $eq: svalue } } }).skip(req.params.index).limit(20); break;
-      case "bychannel": videos = await Video.find({ channel: svalue}).skip(req.params.index).limit(20); break;
+    switch (selectedTagType) {
+      case "all": videos = await Video.find().skip(index).limit(offset); break;
+      case "byviews": videos = await Video.find().sort({views: -1}).skip(index).limit(offset); break;
+      case "bydate": videos = await Video.find().sort({createdAt: -1}).skip(index).limit(offset); break;
+      case "bytag": videos = await Video.find({ tags: { $elemMatch: { $eq: selectedTagValue } } }).skip(index).limit(offset); break;
+      case "bychannel": videos = await Video.find({ channel: selectedTagValue}).skip(index).limit(offset); break;
       default: console.log("fallback"); break;
     }
     res.status(200).json(videos);

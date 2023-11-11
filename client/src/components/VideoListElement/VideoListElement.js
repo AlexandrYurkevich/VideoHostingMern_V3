@@ -2,25 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { VscAccount } from "react-icons/vsc"
 import "./styles.css";
 import { config, timeformat } from "../../shared";
-import axios from "axios";
 import { Link } from "react-router-dom";
 
 export default function VideoListElement({video, showOwner}) {
-  const [channel, setChannel] = useState(null);
+  const [channel, setChannel] = useState(video.channel);
   const [duration, setDuration] =  useState("");
-
-  useEffect(()=> {
-    const getChannel = async () => {
-      try {
-        const res = await axios.get(`${config.backendUrl}/channels/${video.channel}`);
-        setChannel(res.data);
-      }
-      catch (err) {
-        console.log(err);
-      }
-    };
-    getChannel();
-  }, []);
 
   return (
     <div className="big-video-element">

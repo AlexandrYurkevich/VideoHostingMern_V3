@@ -60,6 +60,7 @@ export default function Channel() {
   useEffect(() => {
     const getChannel = async () => {
       try {
+        console.log("channl effect")
         const channel = await axios.get(`${config.backendUrl}/channels/${id}`);
         setChannelPage(channel.data);
         videoService.getVideosByChannel(id, 0).then(res => setVideoList(res.videos))

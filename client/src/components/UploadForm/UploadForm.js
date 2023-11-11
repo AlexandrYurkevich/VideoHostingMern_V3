@@ -1,8 +1,7 @@
 import "./styles.css";
-import { config } from "../../shared";
 import { ChannelContext } from "../../contexts/ChannelContext"
 import { useRef, useContext, useState } from "react";
-import axios from "axios";
+import videoService from "../../services/VideoService";
 
 export default function UploadForm() {
   const {
@@ -13,49 +12,32 @@ export default function UploadForm() {
   const title = useRef();
   const description = useRef();
   const tags = useRef();
-  const video = useRef();
-  const thumbnail = useRef();
+  const videoFile = useRef();
+  const thumbnailFile = useRef();
   const [errormes, setErrormes] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
-  const onUpload = async () => {
-    try {
+  const onUpload = () => {
       if(/^\s*$/.test(title.current.value) || /^\s*$/.test(description.current.value)){
         setErrormes("fields can't consist only from spaces");
         return;
       }
       setIsLoading(true);
-      let formData = new FormData();
-      formData.append('video', video.current.files[0]);
-      const filePath = await axios.post(`${config.backendUrl}/upload/video`, formData,{
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-
-      formData = new FormData();
-      formData.append('thumbnail', thumbnail.current.files[0]);
-      const thumbnailPath = thumbnail.current.files[0] ? await axios.post(`${config.backendUrl}/upload/thumbnail`, formData,{
-        headers: { 'Content-Type': 'multipart/form-data' }
-      }) : null;
-
-      const newVideo = await axios.post(`${config.backendUrl}/videos`, {
+      let videoUrl, thumbnailUrl;
+      videoService.upload(videoFile.current.files[0], 'video').then(res=> videoUrl = res.result)
+      videoService.upload(thumbnailFile.current.files[0], 'thumbnail').then(res=> thumbnailUrl = res.result)
+      videoService.loadVideo({
         title: title.current.value,
         description: description.current.value,
         tags: tags.current.value,
-        channel: channelPage?._id,
-        videoUrl : filePath.data,
-        thumbnail: thumbnailPath?.data
-      });
-      setVideoList([...videoList, newVideo.data]);
-      const videoId = newVideo.data._id;
-      const updatedChannel = await axios.put(`${config.backendUrl}/channels/addvideo/${channelPage?._id}/${videoId}`);
-      setChannelPage({...channelPage, videos: updatedChannel.data.videos});
+        channel_id: channelPage?._id,
+        videoUrl,
+        thumbnailUrl
+      }).then(res=> {
+        setVideoList([...videoList, res.newVideo])
+        setFormHidden(false);
+      })
       setIsLoading(false);
-      setFormHidden(false);
-    }
-    catch (err) {
-      setIsLoading(false);
-      console.log(err.response.data.message);
-    }
   }
 
   return (
@@ -64,9 +46,9 @@ export default function UploadForm() {
         <label style={{color: 'red'}}>{errormes}</label>
         <div className="videoupload">
           <label>Select video to upload(mp4)</label>
-          <input type="file" accept="video/mp4" required ref={video} />
+          <input type="file" accept="video/mp4" required ref={videoFile} />
           <label>Select thumbnail</label>
-          <input type="file" accept="image/png,image/jpeg" ref={thumbnail} />
+          <input type="file" accept="image/png,image/jpeg" ref={thumbnailFile} />
         </div>
         <div className="videodata">
           <div className="videodata-element">

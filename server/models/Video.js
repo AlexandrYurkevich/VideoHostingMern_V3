@@ -11,10 +11,10 @@ const VideoSchema = mongoose.Schema(
   {
     channel_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Channel', required: true },
     title: String,
-    description: String,
+    desc: String,
     duration: Number,
-    videoUrl: String,
-    thumbnailUrl: String,
+    video_url: String,
+    thumbnail_url: String,
     tags: [String]
   },
   { timestamps: true }

@@ -16,7 +16,12 @@ export default function Home() {
 
   const onEndPage = async () => {
     try {
-      const res = await axios.get(`${config.backendUrl}/videos/byTag/${videoList.length}/${selectedTagType}/${selectedTagValue}`);
+      const res = await axios.get(`${config.backendUrl}/videos/byTag`, { params: {
+        index: videoList.length,
+        offset: 20,
+        selectedTagType,
+        selectedTagValue,
+      }});
       setVideoList([...videoList, ...res.data]);
     }
     catch (err) {
@@ -26,8 +31,13 @@ export default function Home() {
 
   const getVideosByTag = async () => {
     try {
-        const res = await axios.get(`${config.backendUrl}/videos/byTag/${0}/${selectedTagType}/${selectedTagValue}`);
-        setVideoList(res.data);
+      const res = await axios.get(`${config.backendUrl}/videos/byTag`, { params: {
+        index: videoList.length,
+        offset: 20,
+        selectedTagType,
+        selectedTagValue,
+      }});
+      setVideoList(res.data);
     } catch (err) { console.log(err); }
   };
 
