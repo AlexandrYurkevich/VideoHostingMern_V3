@@ -1,9 +1,9 @@
 import "./styles.css";
-import { config } from "../../shared";
 import { ChannelContext } from "../../contexts/ChannelContext"
 import { AuthContext } from "../../contexts/AuthContext";
 import { useRef, useContext, useState, useEffect } from "react";
-import axios from "axios";
+import sharedService from "../../services/SharedService";
+import channelService from "../../services/ChannelService";
 
 export default function ChannelForm() {
   const {
@@ -18,42 +18,29 @@ export default function ChannelForm() {
   const avatar = useRef();
   const header = useRef();
 
-  const onUpdate = async () => {
-    try {
+  const onUpdate = () => {
       if(/^\s*$/.test(name.current.value) || /^\s*$/.test(description.current.value)){
         setErrormes("fields can't consist only from spaces");
         return;
       }
       setIsLoading(true);
-      const formData = new FormData();
-      formData.append('avatar', avatar.current.files[0]);
-      const avatarPath = avatar.current.files[0] ? await axios.post(`${config.backendUrl}/upload/avatar`, formData,{
-        headers: { 'Content-Type': 'multipart/form-data' }
-      }) : null;
-
-      const formData2 = new FormData();
-      formData2.append('header', header.current.files[0]);
-      const headerPath = header.current.files[0] ? await axios.post(`${config.backendUrl}/upload/header`, formData2,{
-        headers: { 'Content-Type': 'multipart/form-data' }
-      }) : null;
-
-      const updatedChannel = await axios.put(`${config.backendUrl}/channels/edit/${channelPage?._id}`, {
+      let avatarPath, headerPath;
+      sharedService.upload(avatar.current.files[0], 'avatar').then(res=> avatarPath = res.result)
+      sharedService.upload(header.current.files[0], 'header').then(res=> headerPath = res.result)
+      channelService.editChannel(channelPage.id, {
         name: name.current.value,
         description: description.current.value,
         avatar: avatarPath?.data,
         header: headerPath?.data
-      });
-      setChannelPage(updatedChannel.data);
-      setChannel(updatedChannel.data);
+      }).then(res => {
+        setChannelPage(res.updatedChannel);
+        setChannel(res.updatedChannel);
+        setEditHidden(false);
+      }).catch(err => {
+        setErrormes("Channel title is already held");
+      })
       setIsLoading(false);
-      setEditHidden(false);
     }
-    catch (err) {
-      setIsLoading(false);
-      console.log(err.response.data.message);
-      setErrormes("Channel title is already held");
-    }
-  }
 
   useEffect(()=>{ name.current.value = channelPage.name;
     description.current.value = channelPage.description; },[])

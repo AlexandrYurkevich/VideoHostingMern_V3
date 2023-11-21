@@ -10,66 +10,39 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { ChannelContext } from "../../contexts/ChannelContext";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
-import axios from "axios";
-import userService from "../../services/UserService";
 import videoService from "../../services/VideoService";
+import channelService from "../../services/ChannelService";
+import subscribeService from "../../services/SubscribeService";
 
 export default function Channel() {
-  const { id } = useParams();
-  const { user, setUser } = useContext(AuthContext);
+  const { channel_id } = useParams();
   const navigate = useNavigate();
+  const { user, channel } = useContext(AuthContext);
+  const [subscribersCount, setSubscribersCount] = useState();
+  const [videosCount, setVideosCount] = useState();
+  const [isSubscribed, setIsSubscribed] = useState();
+
   const { formHidden, setFormHidden, editHidden, setEditHidden, 
     channelPage, setChannelPage, videoList, setVideoList } = useContext(ChannelContext);
 
-  const onSubscribe = async ()=> {
-    !user && navigate("/login");
-    try{
-      if(user.subscribedChannels?.includes(channelPage?._id)){
-        const res = await axios.put(`${config.backendUrl}/users/unsubscribe`, {
-          userId: user._id,
-          channelId: channelPage?._id
-        });
-        setChannelPage(res.data.updatedChannel);
-        setUser(res.data.updatedUser)
-      }
-      else{
-        const res = await axios.put(`${config.backendUrl}/users/subscribe`, {
-          userId: user._id,
-          channelId: channelPage?._id
-        });
-        setChannelPage(res.data.updatedChannel);
-        setUser(res.data.updatedUser)
-      }
-    }
-    catch (err) {
-      console.log(err.response.data.message);
-    }
-    // userService.subscribe(user._id, channelPage?._id)
-  }
-
   const onEndPage = () => {
-    videoService.getVideosByChannel(id, videoList.length)
-    .then(res => {
-      setVideoList([...videoList, ...res.videos]);
-    })
-    .catch (err => {
-        console.log(err.message);
-    })
+    videoService.getVideosByChannel(channel_id, videoList.length)
+    .then(res => { setVideoList([...videoList, ...res.videos]); })
+    .catch (err => { console.log(err.message); })
   };
 
   useEffect(() => {
-    const getChannel = async () => {
-      try {
-        console.log("channl effect")
-        const channel = await axios.get(`${config.backendUrl}/channels/${id}`);
-        setChannelPage(channel.data);
-        videoService.getVideosByChannel(id, 0).then(res => setVideoList(res.videos))
-      } catch (err) {
-        console.log(err.response.data.message);
-      }
-    };
-    getChannel();
+    channelService.getChannel(channel_id).then(res => {
+      setChannelPage(res.channel);
+      subscribeService.getSubscribersCount(channel_id).then(res=> setSubscribersCount(res.count));
+      videoService.getVideosCount(channel_id).then(res => setVideosCount(res.count));
+      videoService.getVideosByChannel(channel_id, 0).then(res => {
+        setVideoList(res.videos);
+      })
+    }).catch(err=> console.log(err.message))
   }, []);
+
+  useEffect(()=>{ subscribeService.isSubscribed(channel_id, channel._id).then(res=> setIsSubscribed(res.result)); }, channel)
 
   return (
     <div className="main-container">
@@ -90,11 +63,11 @@ export default function Channel() {
               <VscAccount className="channel-icon-big"/>
             }
             <div className="channel-data">
-              <label className="channel-name">{channelPage?.name}</label>
+              <label className="channel-name">{channelPage?.channel_name}</label>
               <div style={{ display: "flex", gap: 5 }}>
-                <span>@{id}</span>
-                <span>{channelPage?.subscribers.length} subcribers</span>
-                <span>{channelPage?.videos.length} video</span>
+                <span>@{channel_id}</span>
+                <span>{subscribersCount} subcribers</span>
+                <span>{videosCount} videos</span>
               </div>
               <span style={{ wordWrap: "break-word" }}>
                 {channelPage?.description}
@@ -105,10 +78,10 @@ export default function Channel() {
             {
               !user || channelPage?.user != user._id
               ?
-              user?.subscribedChannels.includes(channelPage?._id) ?
-              <button className="subscribe-button" style={{ background: "black" }} onClick={()=>onSubscribe()}>Subscribed</button>
+              isSubscribed ?
+              <button className="subscribe-button" style={{ background: "black" }}>Subscribed</button>
               :
-              <button className="subscribe-button" onClick={()=>onSubscribe()}>Subscribe</button>
+              <button className="subscribe-button">Subscribe</button>
               :
               <div>
                 <button className="subscribe-button" style={{ background: "black" }} onClick={()=> setFormHidden(true)}>
@@ -123,7 +96,7 @@ export default function Channel() {
         </div>
         <div className="channel-body">
           {videoList.map(video =>{
-            return <VideoListElement key={video._id} video={video} showOwner={false}/>;
+            return <VideoListElement video={video} showOwner={false}/>;
           })}
         </div>
     </div>

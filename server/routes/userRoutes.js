@@ -8,13 +8,5 @@ import {
 const router = express.Router();
 
 router.get('/:userId', getUser);
-router.get('/channel/:userId', getChannel);
-router.put('/addview', addView);
-router.put('/addlike', addLike);
-router.put('/removelike', removeLike);
-router.put('/addDislike', addDislike);
-router.put('/removeDislike', removeDislike);
-router.put('/subscribe', subscribe);
-router.put('/unsubscribe', unsubscribe);
 
 export default router;

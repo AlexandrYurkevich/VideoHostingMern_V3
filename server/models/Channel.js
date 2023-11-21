@@ -6,6 +6,7 @@ const channelSchema = mongoose.Schema(
         user_id: { type: Schema.Types.ObjectId, ref: 'User', required: true },
         header: String,
         avatar: String,
+        avatar_color: String,
         channel_name: { type: String, required: true, unique: true },
         channel_desc: String,
         recommended_channels: [{ type: Schema.Types.ObjectId, ref: 'Channel' }]

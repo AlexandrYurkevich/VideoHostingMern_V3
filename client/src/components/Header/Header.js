@@ -10,6 +10,8 @@ import HiddenContainer from "../HiddenContainer/HiddenContainer";
 import { HeaderContext } from "../../contexts/HeaderContext";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Link } from "react-router-dom";
+import Button from "@mui/material/Button";
+import Avatar from "@mui/material/Avatar";
 
 export default function Header() {
   const searchField = useRef();
@@ -43,18 +45,13 @@ export default function Header() {
         {
           user ?
           <Link to = {`/channel/${channel?._id}`}>
-          <button className="getaccount">
-            {channel?.avatar ? <img className="account-img" src={`${config.backendUrl}/${channel?.avatar}`} alt="ava"/> : <VscAccount/>}
-            {channel?.name}
-          </button>
+          {channel?.avatar ?
+            <Avatar alt="ava" src={`${config.backendUrl}/${channel?.avatar}`}/> : 
+            <Avatar sx={{ bgcolor: channel?.avatar_color }}>{channel?.channel_name.charAt(0).toUpperCase()}</Avatar> 
+          }
           </Link>
           :
-          <Link to = "/login">
-          <button className="getaccount">
-            <VscAccount/>
-            Login
-          </button>
-          </Link>
+          <Link to = "/login"><Button variant="contained">Login In</Button></Link>
         }
       </div>
     </div>

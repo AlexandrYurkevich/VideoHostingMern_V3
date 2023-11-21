@@ -23,6 +23,13 @@ const channelService = {
     },
     getRecommendedChannels: (channel_ids) => {
 
+    },
+    editChannel: (channel_id, form) => {
+        return Promise((resolve, reject)=> {
+            axios.put(`${config.backendUrl}/channels/edit/${channel_id}`, form)
+            .then(res => { resolve({updatedChannel: res.data}) })
+            .catch(err => { reject(new Error(err.response.data.message)) })
+        })
     }
 }
 

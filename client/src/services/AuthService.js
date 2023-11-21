@@ -19,7 +19,6 @@ const authService = {
             }
             sessionStorage.setItem("reacttube-user", JSON.stringify(res.data.user._id))
             sessionStorage.setItem("reacttube-channel", JSON.stringify(res.data.channel._id))
-
             resolve({
                 user: res.data.user,
                 channel: res.data.channel
@@ -58,22 +57,18 @@ const authService = {
     },
     loadStorageUser: (stored_user_id)=> {
         return new Promise((resolve,reject)=>{
-        axios.get(`http://localhost:3001/users/${stored_user_id}`)
-        .then(res => {
-            resolve({user: res.data})
+            axios.get(`http://localhost:3001/users/${stored_user_id}`)
+            .then(res => { resolve({user: res.data}) })
+            .catch(err => { resolve({user: null}) })
         })
-        .catch(err => {
-            resolve({user: null})
-        })
-        })
-      },
-      loadStorageChannel: (stored_channel_id)=> {
+    },
+    loadStorageChannel: (stored_channel_id)=> {
         return new Promise((resolve,reject)=>{
             axios.get(`http://localhost:3001/channels/${stored_channel_id}`)
             .then(res => { resolve({channel: res.data}) })
             .catch(err => { resolve({channel: null}) })
         })
-      }
+    }
 };
 
 export default authService;

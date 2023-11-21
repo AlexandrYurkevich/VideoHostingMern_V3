@@ -1,14 +1,16 @@
 import { useRef, useContext, useState } from "react";
 import "./styles.css";
+import "../../shared_styles.css";
 import { AuthContext } from "../../contexts/AuthContext"
 import { Link } from "react-router-dom";
 import authService from "../../services/AuthService";
+import { Button, Checkbox, FormControlLabel, TextField, Typography } from "@mui/material";
 
 export default function Login() {
   const mail = useRef()
   const password = useRef()
   const [saveLogin, setSaveLogin] = useState(false);
-  const { user, channel, setUser, setChannel } = useContext(AuthContext)
+  const { setUser, setChannel } = useContext(AuthContext)
   const [errormes, setErrormes] = useState();
 
   const onLogin = () => {
@@ -18,45 +20,48 @@ export default function Login() {
         setChannel(res.channel);
       })
       .catch(err => {
+        console.log(err.message);
         setErrormes(err.message);
       });
   };
 
   return (
     <div className="auth-background">
-    <form className="auth-form" onSubmit={(e)=> { e.preventDefault(); onLogin()}}>
-      <label>Login</label>
-      <label style={{color: 'red'}}>{errormes}</label>
-      <input
-        className="auth-field"
-        type="email"
-        placeholder="E-mail"
-        required
-        ref={mail}
-      />
-      <input
-        className="auth-field"
-        type="password"
-        placeholder="Password"
-        required
-        minLength={6}
-        ref={password}
-      />
-      <div className="reset-forget">
-        <input className="auth-button" type="reset" value="Reset" />
-        <input className="auth-button" type="button" defaultValue="Forget?" />
-      </div>
-      <div className="remember" style={{ display: "flex" }}>
-        <input type="checkbox" onChange={(e)=>setSaveLogin(!saveLogin)}/>
-        <label>Remember me</label>
-      </div>
-      <div className="logreg">
-        <input className="auth-button" type="submit" value="Login"/>
-        <Link to="/register">
-          <input className="auth-button" type="button" defaultValue="Register" />
-        </Link>
-      </div>
-    </form>
-  </div>
+      <form className="auth-form" onSubmit={(e)=> { e.preventDefault(); onLogin()}}>
+        <Typography variant="h5" color="primary">Login</Typography>
+        {errormes && <Typography variant="h5" style={{ color: 'red' }}>{errormes}</Typography>}
+        <TextField sx={{ width: '80%' }}
+          type="email"
+          label="E-mail"
+          placeholder="E-mail"
+          required
+          inputRef={mail}
+        />
+        <TextField sx={{ width: '80%' }}
+          type="password"
+          label="Password"
+          placeholder="Password"
+          required
+          inputRef={password}
+          minLength={6}
+        />
+        <Button type="reset" variant="contained" sx={{ width: '50%' }}>
+          Reset
+        </Button>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={saveLogin}
+              onChange={(e) => setSaveLogin(e.target.checked)}
+            />
+          }
+          label="Remember me"
+        />
+        <div className="detached-container">
+          <Button type="submit" variant="contained" sx={{ width: '100%' }}>Login</Button>
+          <Link className="detached-container" to="/register"><Button variant="contained" sx={{ width: '100%' }}>Register</Button></Link>
+        </div>
+      </form>
+    </div>
   );
 }

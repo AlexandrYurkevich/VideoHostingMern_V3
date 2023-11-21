@@ -474,3 +474,47 @@ span {
     color: white;
 }
 
+.css-mmlyfu {
+    display: flex;
+    flex-direction: column;
+    width: 344px;
+    position: relative;
+}
+.css-1sfa97m {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    height: 150%;
+    position: absolute;
+    opacity: 1;
+    transform: skew(-16deg, 4deg);
+}
+
+.css-12nqhhl {
+    position: absolute;
+    margin-top: -40px;
+}
+
+.css-12efcmn {
+    position: absolute;
+}
+
+.css-1ooscve {
+    display: flex;
+    flex-direction: column;
+    width: 720px;
+    position: relative;
+    margin-left: -40px;
+}
+
+.css-7q38pq {
+    min-width: 0px;
+    box-sizing: border-box;
+    padding: 100px 20px;
+}
+.css-7q38pq {
+    -webkit-box-flex: 0;
+    flex-grow: 0;
+    flex-basis: auto;
+    width: calc(100% * 6 / 2);
+}

@@ -3,6 +3,7 @@ import { VscAccount } from "react-icons/vsc"
 import "./styles.css";
 import { config, timeformat } from "../../shared";
 import { Link } from "react-router-dom";
+import Avatar from "@mui/material/Avatar"
 
 export default function VideoListElement({video, showOwner}) {
   const [channel, setChannel] = useState(video.channel);
@@ -28,8 +29,8 @@ export default function VideoListElement({video, showOwner}) {
       <div className="big-video-header">
         <div className="channel-element">
           {channel?.avatar ?
-            <img className="channel-icon" src={`${config.backendUrl}/${channel?.avatar}`} alt="ava"/> : 
-            <VscAccount className="channel-icon"/>
+            <Avatar alt="ava" src={`${config.backendUrl}/${channel?.avatar}`}/> : 
+            <Avatar sx={{ bgcolor: channel.avatar_color }}>{channel?.name}</Avatar> 
           }
         </div>
         <div className="big-video-data">

@@ -1,5 +1,4 @@
 import { createContext, useEffect, useState } from "react";
-import axios from "axios";
 import authService from "../services/AuthService";
 
 const start_user_id = JSON.parse(sessionStorage.getItem("reacttube-user"))

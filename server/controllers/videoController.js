@@ -9,9 +9,9 @@ export const addVideo = async (req,res)=>{
   try {
     const newVideo = new Video({
       title: req.body.title,
-      description: req.body.description,
-      videoUrl: req.body.videoUrl,
-      thumbnailUrl: req.body.thumbnailUrl,
+      desc: req.body.desc,
+      video_url: req.body.video_url,
+      thumbnail_url: req.body.thumbnail_url,
       tags: req.body.tags.split(/[\s,-.;]+/).filter(element => element),
       channel_id: req.body.channel_id
     });
@@ -22,9 +22,6 @@ export const addVideo = async (req,res)=>{
     res.status(400).json({ message: error.message });
   }
 }
-
-
-
 export const deleteVideo = async (req,res)=>{
   try {
     const videoDeleted = await Video.findByIdAndDelete(req.params.id);
@@ -33,7 +30,13 @@ export const deleteVideo = async (req,res)=>{
   catch (error) { res.status(404).json({ message: error.message }) }
 }
 
-
+export const getVideosCount = async (req,res)=>{
+  try {
+    const video_count = await Video.countDocuments({channel_id : req.params.channel_id});
+    res.status(200).json(video_count);
+  }
+  catch (error) { res.status(404).json({ message: error.message }) }
+}
 export const getVideo = async (req,res)=>{
   try {
     const video = await Video.findById(req.params.id).populate('channel');

@@ -31,6 +31,12 @@ const likeService = {
                 reject(new Error(err.response.data.message));
             })
         })
+    },
+    isLikedByChannel: (video_id, channel_id)=> {
+
+    },
+    isDislikedByChannel: (video_id, channel_id)=> {
+
     }
 }
 

@@ -1,27 +1,5 @@
-body {
-    margin:0;
-    font-family:'Roboto', Arial, sans-serif;
-}
-
-button,input {
-    border: none;
-    outline: none;
-    background: transparent;
-}
-
-a {
-    text-decoration: none;
-    color: black;
-}
-
-span {
-    color: gray;
-}
-
-
-
 .auth-background{
-    background:linear-gradient(rgb(255, 54, 111), rgb(255, 179, 64));
+    background:linear-gradient(#ff366f, #ffb340);
     display:flex;
     width: 100vw;
     height: 100vh;
@@ -39,22 +17,5 @@ span {
     align-items: center;
     padding: 10px;
     border-radius: 20px;
-}
-
-.auth-field {
-    border-bottom: 2px black solid;
-    font-size:1em
-}
-
-.auth-button{
-    border-radius: 8px;
-    background: black;
-    font-size:1em;
-    color: white;
-    cursor: pointer;
-}
-
-.date-input{
-    color:grey;
-    width:100%;
+    min-width: 30vw;
 }

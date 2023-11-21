@@ -4,6 +4,12 @@ import Channel from "../models/Channel.js";
 import bcrypt from 'bcrypt'
 
 const router = express.Router();
+function getRandomColor() {
+    var hexR = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
+    var hexG = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
+    var hexB = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
+    return '#' + hexR + hexG + hexB;
+}
 
 export const Register = async (req, res) => {
     try {
@@ -16,12 +22,13 @@ export const Register = async (req, res) => {
         });
         const user = await newUser.save();
         const newChannel = new Channel({
-            name: req.body.name,
-            user: user._id
+            channel_name: req.body.name,
+            user_id: user._id,
+            avatar_color: getRandomColor()
         });
         const channel = await newChannel.save();
         res.status(200).json({ user: user, channel: channel });
-    } catch (err) { res.status(500).json({message: "User existed"}) }
+    } catch (err) { console.log(err); res.status(500).json({message: "User already exists"}) }
 };
 export const Login = async (req, res) => {
     try {
@@ -33,7 +40,7 @@ export const Login = async (req, res) => {
         if(!match){
             return res.status(400).json({message: "Invalid password"})
         }
-        const channel = await Channel.findOne({user: user._id})
+        const channel = await Channel.findOne({user_id: user._id})
         res.status(200).json({ user: user, channel: channel })
     } catch (err) {
         res.status(500).json({message: err.massage})

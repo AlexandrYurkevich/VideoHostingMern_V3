@@ -12,24 +12,33 @@ import { TagProvider } from "./contexts/TagContext";
 import SearchVideo from "./pages/SearchVideo/SearchVideo";
 import History from "./pages/History/History"
 import Subscribes from "./pages/SubscribesVideo/SubscribesVideo"
+import { ThemeProvider } from "@emotion/react";
+import { createTheme } from '@mui/material/styles';
 
 const App = () => {
     const { user } = useContext(AuthContext);
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route exact path="/" element={ <TagProvider><Home/></TagProvider> } />
-                <Route path="/login" element={ user ? <Navigate to="/" /> : <Login/> } />
-                <Route path="/register" element={ user ? <Navigate to="/" /> : <Register/> } />
-                <Route path="/search" element={ <TagProvider><SearchVideo/></TagProvider> } />
+        <ThemeProvider theme={createTheme({
+            palette: {
+              primary: { main: '#ff366f' },
+              secondary: { main: '#ffb340' },
+            },
+          })}>
+            <BrowserRouter>
+                <Routes>
+                    <Route exact path="/" element={ <TagProvider><Home/></TagProvider> } />
+                    <Route path="/login" element={ user ? <Navigate to="/" /> : <Login/> } />
+                    <Route path="/register" element={ user ? <Navigate to="/" /> : <Register/> } />
+                    <Route path="/search" element={ <TagProvider><SearchVideo/></TagProvider> } />
 
-                <Route path="/history" element={ <History/> } />
-                <Route path="/subscribes" element={ <Subscribes/> } />
+                    <Route path="/history" element={ <History/> } />
+                    <Route path="/subscribes" element={ <Subscribes/> } />
 
-                <Route path="/channel/:id" element={ <ChannelProvider><Channel/></ChannelProvider> } />
-                <Route path="/watch/:id" element={ <TagProvider><WatchVideo/></TagProvider> } />
-            </Routes>
-        </BrowserRouter>
+                    <Route path="/channel/:channel_id" element={ <ChannelProvider><Channel/></ChannelProvider> } />
+                    <Route path="/watch/:id" element={ <TagProvider><WatchVideo/></TagProvider> } />
+                </Routes>
+            </BrowserRouter>
+        </ThemeProvider>
     )
 }
 export default App;

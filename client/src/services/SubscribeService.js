@@ -2,39 +2,27 @@ import { config } from "../shared";
 import axios from "axios";
 
 const subscribeService = {
-    getVideo: (subscribe_id) => {
+    getSubscribersCount: (channel_id) =>{
         return new Promise((resolve, reject) => {
-            axios.get(`${config.backendUrl}/subscribes/${subscribe_id}`)
+            axios.get(`${config.backendUrl}/subscribes/count/${channel_id}`)
             .then(res => {
-                resolve({
-                    subscribe: res.data,
-                    channel:res.data.channel
-                })
+                resolve({ count: res.data })
             })
             .catch (err => {
                 reject(new Error(err.response.data.message));
             })
         })
     },
-    getVideosByChannel: (channel_id, offset) => {
+    isSubscribed: (sub_channel_id, who) => {
         return new Promise((resolve, reject) => {
-            axios.get(`${config.backendUrl}/subscribes/byChannel`,{ params: {
-                channel_id,
-                offset
-            }})
+            axios.get(`${config.backendUrl}/subscribes/is_sub`, {
+                params: {sub_channel_id, who}
+            })
             .then(res => {
-                resolve({ subscribes: res.data })
+                resolve({ result: res.data })
             })
             .catch (err => {
                 reject(new Error(err.response.data.message));
-            })
-        })
-    },
-    deleteVideo: (subscribe_id) => {
-        return new Promise((resolve, reject) => {
-            axios.delete(`${config.backendUrl}/subscribes/${subscribe_id}`)
-            .catch(err => {
-                reject(new Error(err.response.data.message))
             })
         })
     }

@@ -30,6 +30,17 @@ const videoService = {
             })
         })
     },
+    getVideosCount: (channel_id) => {
+        return new Promise((resolve, reject) => {
+            axios.get(`${config.backendUrl}/videos/count/${channel_id}`)
+            .then(res => {
+                resolve({ count: res.data })
+            })
+            .catch (err => {
+                reject(new Error(err.response.data.message));
+            })
+        })
+    },
     deleteVideo: (video_id) => {
         return new Promise((resolve, reject) => {
             axios.delete(`${config.backendUrl}/videos/${video_id}`)
