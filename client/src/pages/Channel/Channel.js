@@ -40,9 +40,9 @@ export default function Channel() {
         setVideoList(res.videos);
       })
     }).catch(err=> console.log(err.message))
-  }, []);
+  }, [channel_id]);
 
-  useEffect(()=>{ subscribeService.isSubscribed(channel_id, channel._id).then(res=> setIsSubscribed(res.result)); }, channel)
+  useEffect(()=>{ channel && subscribeService.isSubscribed(channel_id, channel?._id).then(res=> setIsSubscribed(res.result)); }, [channel])
 
   return (
     <div className="main-container">
@@ -52,10 +52,7 @@ export default function Channel() {
       <div className="channel-container" onScroll={(e)=>{
         (e.target.offsetHeight + e.target.scrollTop >= e.target.scrollHeight) && onEndPage()
       }}>
-        {channelPage?.header ? 
-          <img className="channel-header" src= {`${config.backendUrl}/${channelPage?.header}`}/> :
-          <div className="channel-header"/>
-        }
+        {channelPage?.header && <img className="channel-banner" src= {`${config.backendUrl}/${channelPage?.header}`}/>}
         <div className="channel-main">
           <div style={{ display: "flex", gap: 10 }}>
             {channelPage?.avatar ? 
@@ -76,7 +73,7 @@ export default function Channel() {
           </div>
           <div style={{ display: "flex", gap: 5 }}>
             {
-              !user || channelPage?.user != user._id
+              !user || channelPage?.user_id != user._id
               ?
               isSubscribed ?
               <button className="subscribe-button" style={{ background: "black" }}>Subscribed</button>

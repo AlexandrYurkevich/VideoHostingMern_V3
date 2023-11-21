@@ -1,22 +1,4 @@
-body {
-    margin:0;
-    font-family:'Roboto', Arial, sans-serif;
-}
 
-button,input {
-    border: none;
-    outline: none;
-    background: transparent;
-}
-
-a {
-    text-decoration: none;
-    color: black;
-}
-
-span {
-    color: gray;
-}
 
 
 

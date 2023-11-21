@@ -1,4 +1,5 @@
 import "./styles.css";
+import "../../shared_styles.css"
 import { config } from "../../shared";
 import { useContext, useRef } from "react";
 import { Redirect, useNavigate } from "react-router-dom";
@@ -12,6 +13,9 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import VideoCallIcon from '@mui/icons-material/VideoCall';
+import { Badge, IconButton } from "@mui/material";
 
 export default function Header() {
   const searchField = useRef();
@@ -42,17 +46,23 @@ export default function Header() {
             <BsSearch className="search-img" alt="acc"/>
           </button>
         </div>
-        {
-          user ?
-          <Link to = {`/channel/${channel?._id}`}>
-          {channel?.avatar ?
-            <Avatar alt="ava" src={`${config.backendUrl}/${channel?.avatar}`}/> : 
-            <Avatar sx={{ bgcolor: channel?.avatar_color }}>{channel?.channel_name.charAt(0).toUpperCase()}</Avatar> 
-          }
-          </Link>
+        {user ?
+          <div className="detached-container">
+            <IconButton aria-label="add_video" sx={{p: '4px'}}>
+              <VideoCallIcon fontSize="large"/>
+            </IconButton>
+            <IconButton aria-label="notifications">
+              <Badge badgeContent={0} color="primary"><NotificationsIcon /></Badge>
+            </IconButton>
+            <Link to = {`/channel/${channel?._id}`}>
+            {channel?.avatar ?
+              <Avatar alt="ava" src={`${config.backendUrl}/${channel?.avatar}`}/> : 
+              <Avatar sx={{ bgcolor: channel?.avatar_color }}>{channel?.channel_name.charAt(0).toUpperCase()}</Avatar> 
+            }
+            </Link>
+          </div>
           :
-          <Link to = "/login"><Button variant="contained">Login In</Button></Link>
-        }
+          <Link to = "/login"><Button variant="contained">Login In</Button></Link>}
       </div>
     </div>
   );

@@ -20,7 +20,7 @@ export default function Login() {
         setChannel(res.channel);
       })
       .catch(err => {
-        console.log(err.message);
+        console.log("authservice " + err.message);
         setErrormes(err.message);
       });
   };
@@ -43,7 +43,7 @@ export default function Login() {
           placeholder="Password"
           required
           inputRef={password}
-          minLength={6}
+          inputProps={{ minLength: 6 }}
         />
         <Button type="reset" variant="contained" sx={{ width: '50%' }}>
           Reset

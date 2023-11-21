@@ -11,6 +11,7 @@ import userRoutes from './routes/userRoutes.js';
 import videoRoutes from './routes/videoRoutes.js';
 import channelRoutes from './routes/channelRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
+import subscribeRoutes from './routes/subscribeRoutes.js';
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use("/users", userRoutes);
 app.use("/videos", videoRoutes);
 app.use("/channels", channelRoutes);
 app.use("/upload", uploadRoutes);
+app.use("/subscribes", subscribeRoutes);
 
 
 //Mongodb and server connect
