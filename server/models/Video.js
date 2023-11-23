@@ -16,7 +16,7 @@ const VideoSchema = mongoose.Schema(
     video_url: String,
     thumbnail_url: String,
     tags: [String],
-    state: String
+    access_status: { type: number, default: false }
   },
   { timestamps: true }
 );

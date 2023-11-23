@@ -31,8 +31,8 @@ const App = () => {
                     <Route path="/register" element={ user ? <Navigate to="/" /> : <Register/> } />
                     <Route path="/search" element={ <TagProvider><SearchVideo/></TagProvider> } />
 
-                    <Route path="/history" element={ <History/> } />
-                    <Route path="/subscribes" element={ <Subscribes/> } />
+                    <Route path="/history" element={ user ? <History/> : <Navigate to="/login" />} />
+                    <Route path="/subscribes" element={ user ? <Subscribes/> : <Navigate to="/login" />} />
 
                     <Route path="/channel/:channel_id" element={ <ChannelProvider><Channel/></ChannelProvider> } />
                     <Route path="/watch/:id" element={ <TagProvider><WatchVideo/></TagProvider> } />

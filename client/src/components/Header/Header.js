@@ -1,18 +1,17 @@
 import "./styles.css";
 import "../../shared_styles.css"
 import { config } from "../../shared";
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 import { Redirect, useNavigate } from "react-router-dom";
-import { VscAccount, VscMenu } from "react-icons/vsc"
 import {BsSearch } from "react-icons/bs"
 import { IoLogoReact } from "react-icons/io5"
 import HiddenContainer from "../HiddenContainer/HiddenContainer";
 
-import { HeaderContext } from "../../contexts/HeaderContext";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
+import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import { Badge, IconButton } from "@mui/material";
@@ -21,21 +20,20 @@ export default function Header() {
   const searchField = useRef();
   const navigate = useNavigate();
   const { user, channel } = useContext(AuthContext)
-  const { sidebarHidden, setSidebarHidden } = useContext(HeaderContext)
+  const [sidebarOpened, setSidebarOpened] = useState(false)
 
   return (
     <div>
-      {sidebarHidden && <HiddenContainer/>}
       <div className="main-header">
         <div className="logo-container">
-          <button className="logo-element" onClick={()=>setSidebarHidden(true)}>
-            <VscMenu className="logo-menu" alt="menu" />
-          </button>
+          <IconButton aria-label="sidebar menu" sx={{p: '4px'}} onClick={()=>setSidebarOpened(true)}>
+            <MenuIcon fontSize="large"/>
+          </IconButton>
           <Link to="/">
-          <button className="logo-element">
-            <IoLogoReact className="logo-icon" alt="logo" />
-            ReactTube
-          </button>
+            <button className="logo-element">
+              <IoLogoReact className="logo-icon" alt="logo" />
+              ReactTube
+            </button>
           </Link>
         </div>
         <div className="searchbar" role="search">
@@ -64,6 +62,7 @@ export default function Header() {
           :
           <Link to = "/login"><Button variant="contained">Login In</Button></Link>}
       </div>
+      <HiddenContainer open={sidebarOpened} onClose={()=> setSidebarOpened(false)}/>
     </div>
   );
 }

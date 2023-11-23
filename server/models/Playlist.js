@@ -4,7 +4,7 @@ const PlaylistSchema = mongoose.Schema(
 {
   channel_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Channel', required: true },
   playlist_name: String,
-  is_private: Boolean
+  type: {type: number, default: 0 }
 },{ timestamps: true }
 )
 const Playlist = mongoose.model('Playlist', PlaylistSchema);
