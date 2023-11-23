@@ -61,25 +61,3 @@
     font-size: 1.5rem;
     height: 30px;
 }
-
-.getaccount {
-    height: 36px;
-    color: rgb(2, 156, 217);
-    font-size: 1.2em;
-    display: flex;
-    align-items: center;
-    cursor:pointer;
-    border-radius: 20px;
-    border: 1px rgb(2, 156, 217) solid;
-}
-
-.account-img{
-    width: 1.5em;
-    height: 1.5em;
-    object-fit: cover;
-    border-radius: 50%;
-}
-
-.getaccount:hover{
-    background: rgb(199, 239, 255);
-}

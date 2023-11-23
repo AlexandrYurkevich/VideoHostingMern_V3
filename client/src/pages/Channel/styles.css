@@ -1,29 +1,8 @@
-body {
-    margin:0;
-    font-family:'Roboto', Arial, sans-serif;
-}
-
-button,input {
-    border: none;
-    outline: none;
-    background: transparent;
-}
-
-a {
-    text-decoration: none;
-    color: black;
-}
-
-span {
-    color: gray;
-}
-
 .main-container {
     height: 100vh;
     display: flex;
     flex-direction: column;
 }
-
 
 .channel-container {
     flex-grow: 1;
@@ -32,17 +11,12 @@ span {
     flex-direction: column;
 }
 
-.channel-header {
+.channel-banner {
     min-height: 160px;
     height: 160px;
     object-fit: cover;
-    background: repeating-linear-gradient(
-    45deg,
-    rgb(255, 133, 81),
-    rgb(255, 133, 81) 10px,
-    rgb(196,100,62) 10px,
-    rgb(196,100,62) 20px
-    );
+    padding-left: 2px;
+    padding-right: 2px;
 }
 
 .channel-main {
@@ -51,16 +25,8 @@ span {
     justify-content: space-between;
 }
 
-.channel-icon-big {
-    width: 64px;
-    height: 64px;
-    object-fit: cover;
-    margin: 5px;
-    border-radius: 50%;
-}
-
-.channel-name {
-    font-size: 20px;
+.channel-navigation {
+    display: flex;
 }
 
 .channel-body {

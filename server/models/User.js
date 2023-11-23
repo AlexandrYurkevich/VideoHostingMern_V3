@@ -5,11 +5,9 @@ const userSchema = mongoose.Schema(
     {
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true },
-        language: String,
-        notifications: { type: Boolean, default: true },
         sex: Boolean,
         res_mail: String,
-        birthdate: Date,
+        birthdate: Date
     },{ timestamps: true }
 )
 

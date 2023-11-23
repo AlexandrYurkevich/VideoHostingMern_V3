@@ -55,8 +55,8 @@ export default function Header() {
               <Badge badgeContent={0} color="primary"><NotificationsIcon /></Badge>
             </IconButton>
             <Link to = {`/channel/${channel?._id}`}>
-            {channel?.avatar ?
-              <Avatar alt="ava" src={`${config.backendUrl}/${channel?.avatar}`}/> : 
+            {channel?.avatar_url ?
+              <Avatar alt="ava" src={`${config.backendUrl}/${channel?.avatar_url}`}/> : 
               <Avatar sx={{ bgcolor: channel?.avatar_color }}>{channel?.channel_name.charAt(0).toUpperCase()}</Avatar> 
             }
             </Link>

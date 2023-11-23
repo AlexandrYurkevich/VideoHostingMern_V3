@@ -14,25 +14,25 @@ const createStorage = (folder) =>{
 const videoStorage = createStorage("videos")
 const uploadVideo = multer({ storage: videoStorage });
 router.post('/video', uploadVideo.single('video'), (req, res) => {
-  res.send(req.file.path.replace('public\\', ''));
+  res.send(req.file?.path.replace('public\\', ''));
 });
   
 const thumbnailStorage = createStorage("thumbnails")
 const uploadThumbnail = multer({ storage: thumbnailStorage });
 router.post('/thumbnail', uploadThumbnail.single('thumbnail'), (req, res) => {
-  res.send(req.file.path.replace('public\\', ''));
+  res.send(req.file?.path.replace('public\\', ''));
 });
 
 const avatarStorage = createStorage("avatars")
 const uploadAvatar = multer({ storage: avatarStorage });
 router.post('/avatar', uploadAvatar.single('avatar'), (req, res) => {
-  res.send(req.file.path.replace('public\\', ''));
+  res.send(req.file?.path.replace('public\\', ''));
 });
 
 const headerStorage = createStorage("headers")
 const uploadHeader = multer({ storage: headerStorage });
 router.post('/header', uploadHeader.single('header'), (req, res) => {
-  res.send(req.file.path.replace('public\\', ''));
+  res.send(req.file?.path.replace('public\\', ''));
 });
 
 export default router;

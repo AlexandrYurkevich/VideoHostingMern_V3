@@ -173,7 +173,7 @@ export default function WatchVideo() {
           <label style={{ fontSize: 20 }}>{video?.title}</label>
           <div className="video-header">
             <div className="author-data">
-              <img className="channel-icon" src={`${config.backendUrl}/${channel?.avatar}`} alt="channel" />
+              <img className="channel-icon" src={`${config.backendUrl}/${channel?.avatar_url}`} alt="channel" />
               <div className="channel-data">
                 <Link to={"/channel/"+channel?._id}>{channel?.name}</Link>
                 <span>{channel?.subscribers.length} Subs</span>

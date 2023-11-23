@@ -2,9 +2,9 @@ import { config } from "../shared";
 import axios from "axios";
 
 const sharedService = {
-    upload: (video, destination) => {
+    upload: (file, destination) => {
         let formData = new FormData();
-        formData.append(destination, video);
+        formData.append(destination, file);
         return new Promise((resolve, reject) => {
             axios.post(`${config.backendUrl}/upload/${destination}`, formData,{
                 headers: { 'Content-Type': 'multipart/form-data' }

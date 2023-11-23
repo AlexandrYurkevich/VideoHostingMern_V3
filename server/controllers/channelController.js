@@ -15,9 +15,9 @@ export const edit = async (req,res)=>{
     try {
         const update = await Channel.findByIdAndUpdate({_id: req.params.id},
         {$set:{
-            name: req.body.name,
-            description: req.body.description,
-            avatar: req.body.avatar,
+            channel_name: req.body.channel_name,
+            channel_desc: req.body.channel_desc,
+            avatar_url: req.body.avatar_url,
             header: req.body.header
         }},
         {new: true });
@@ -27,7 +27,7 @@ export const edit = async (req,res)=>{
 
 export const addRecommendedChannel = async (req, res) => {
     try{
-        const update = await Channel.findByIdAndUpdate({_id: req.body.channelId},
+        const update = await Channel.findByIdAndUpdate(req.body.channelId,
         { $push: { recommendedChannels: req.body.recId } },
         {new: true });
         res.status(200).json(update);

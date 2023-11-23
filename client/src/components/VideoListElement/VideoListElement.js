@@ -28,8 +28,8 @@ export default function VideoListElement({video, showOwner}) {
       </Link>
       <div className="big-video-header">
         <div className="channel-element">
-          {channel?.avatar ?
-            <Avatar alt="ava" src={`${config.backendUrl}/${channel?.avatar}`}/> : 
+          {channel?.avatar_url ?
+            <Avatar alt="ava" src={`${config.backendUrl}/${channel?.avatar_url}`}/> : 
             <Avatar sx={{ bgcolor: channel.avatar_color }}>{channel?.name}</Avatar> 
           }
         </div>

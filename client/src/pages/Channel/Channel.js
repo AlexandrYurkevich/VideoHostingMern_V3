@@ -3,7 +3,6 @@ import { HeaderProvider } from "../../contexts/HeaderContext";
 import VideoListElement from "../../components/VideoListElement/VideoListElement";
 import UploadForm from "../../components/UploadForm/UploadForm";
 import ChannelForm from "../../components/ChannelForm/ChannelForm";
-import { VscAccount } from "react-icons/vsc";
 import "./styles.css";
 import { config } from "../../shared"
 import { AuthContext } from "../../contexts/AuthContext";
@@ -13,17 +12,38 @@ import { useEffect, useState, useContext } from "react";
 import videoService from "../../services/VideoService";
 import channelService from "../../services/ChannelService";
 import subscribeService from "../../services/SubscribeService";
+import { Button, Avatar, Dialog, DialogContent, DialogTitle, Tab, Tabs, Typography } from "@mui/material";
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 export default function Channel() {
   const { channel_id } = useParams();
   const navigate = useNavigate();
   const { user, channel } = useContext(AuthContext);
-  const [subscribersCount, setSubscribersCount] = useState();
-  const [videosCount, setVideosCount] = useState();
-  const [isSubscribed, setIsSubscribed] = useState();
+  const [subscribersCount, setSubscribersCount] = useState(0);
+  const [videosCount, setVideosCount] = useState(0);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [currentTab, setCurrentTab] = useState(0);
 
-  const { formHidden, setFormHidden, editHidden, setEditHidden, 
+  const { formHidden, setFormHidden, editHidden, setEditHidden,
     channelPage, setChannelPage, videoList, setVideoList } = useContext(ChannelContext);
+  const [fullDescOpen, setFullDescOpen] = useState(false);
+
+  const ChannelDesciptionComponent = ()=> {
+    if(!channelPage?.channel_desc) return(<Typography variant="body1">Похоже у канала ещё нет описания.</Typography>)
+    let newLineIndex = channelPage?.channel_desc.indexOf("\n");
+    let isToMuch = channelPage?.channel_desc.length > 64 || newLineIndex != -1;
+    return(<div>
+      <Typography variant="body1">
+        {isToMuch
+          ? `${channelPage?.channel_desc.substring(0, 64).substring(0, newLineIndex !=-1 ? newLineIndex : channelPage?.channel_desc.length)}...`
+          : channelPage?.channel_desc}
+        {isToMuch && <ArrowForwardIosIcon onClick={()=>setFullDescOpen(true)} fontSize="small"/>}
+      </Typography>
+      <Dialog open={fullDescOpen} onClose={()=>setFullDescOpen(false)}>
+        <DialogTitle>Full description</DialogTitle>
+        <DialogContent>{channelPage?.channel_desc}</DialogContent>
+      </Dialog>
+    </div>)}
 
   const onEndPage = () => {
     videoService.getVideosByChannel(channel_id, videoList.length)
@@ -55,42 +75,36 @@ export default function Channel() {
         {channelPage?.header && <img className="channel-banner" src= {`${config.backendUrl}/${channelPage?.header}`}/>}
         <div className="channel-main">
           <div style={{ display: "flex", gap: 10 }}>
-            {channelPage?.avatar ? 
-              <img className="channel-icon-big" src={`${config.backendUrl}/${channelPage?.avatar}`} alt="icon" /> :
-              <VscAccount className="channel-icon-big"/>
+            {channelPage?.avatar_url ? 
+              <Avatar sx={{ width: 160, height: 160 }} alt="ava" src={`${config.backendUrl}/${channelPage?.avatar_url}`}/> : 
+              <Avatar sx={{ bgcolor: channelPage?.avatar_color,width: 160, height: 160,fontSize: '80px' }}>{channelPage?.channel_name.charAt(0).toUpperCase()}</Avatar> 
             }
             <div className="channel-data">
-              <label className="channel-name">{channelPage?.channel_name}</label>
+              <Typography variant="h4">{channelPage?.channel_name}</Typography>
               <div style={{ display: "flex", gap: 5 }}>
                 <span>@{channel_id}</span>
                 <span>{subscribersCount} subcribers</span>
                 <span>{videosCount} videos</span>
               </div>
-              <span style={{ wordWrap: "break-word" }}>
-                {channelPage?.description}
-              </span>
+              <ChannelDesciptionComponent/>
+              {
+                !user || channelPage?.user_id != user._id
+                ?
+                <button className="subscribe-button" style={{background: isSubscribed ? "black": "red"}}>{isSubscribed ? "Subscribed" : "Subscribe"}</button>
+                :
+                <div style={{ display: "flex", gap: 5 }}>
+                  <Button variant="contained" color="secondary" sx={{borderRadius:'50px'}} onClick={()=> setEditHidden(true)}>Edit Channel View</Button>
+                  <Button variant="contained" color="secondary" sx={{borderRadius:'50px'}} onClick={()=> setEditHidden(true)}>Manage Videos</Button>
+                </div>
+              }
             </div>
           </div>
-          <div style={{ display: "flex", gap: 5 }}>
-            {
-              !user || channelPage?.user_id != user._id
-              ?
-              isSubscribed ?
-              <button className="subscribe-button" style={{ background: "black" }}>Subscribed</button>
-              :
-              <button className="subscribe-button">Subscribe</button>
-              :
-              <div>
-                <button className="subscribe-button" style={{ background: "black" }} onClick={()=> setFormHidden(true)}>
-                  Upload Video
-                </button>
-                <button className="subscribe-button" style={{ background: "black" }} onClick={()=> setEditHidden(true)}>
-                  Edit Channel
-                </button>
-              </div>
-            }
-          </div>
         </div>
+        <Tabs value={currentTab} onChange={(event, newValue) => {setCurrentTab(newValue)}} aria-label="channel tabs">
+          <Tab label="Main" />
+          <Tab label="Videos"/>
+          <Tab label="Playlists"/>
+        </Tabs>
         <div className="channel-body">
           {videoList.map(video =>{
             return <VideoListElement video={video} showOwner={false}/>;
