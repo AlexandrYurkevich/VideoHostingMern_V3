@@ -29,9 +29,9 @@ router.post('/avatar', uploadAvatar.single('avatar'), (req, res) => {
   res.send(req.file?.path.replace('public\\', ''));
 });
 
-const headerStorage = createStorage("headers")
-const uploadHeader = multer({ storage: headerStorage });
-router.post('/header', uploadHeader.single('header'), (req, res) => {
+const bannerStorage = createStorage("banners")
+const uploadBanner = multer({ storage: bannerStorage });
+router.post('/banner', uploadBanner.single('banner'), (req, res) => {
   res.send(req.file?.path.replace('public\\', ''));
 });
 

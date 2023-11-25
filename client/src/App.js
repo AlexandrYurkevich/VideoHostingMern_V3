@@ -14,6 +14,7 @@ import History from "./pages/History/History"
 import Subscribes from "./pages/SubscribesVideo/SubscribesVideo"
 import { ThemeProvider } from "@emotion/react";
 import { createTheme } from '@mui/material/styles';
+import Studio from "./pages/Studio/Studio";
 
 const App = () => {
     const { user } = useContext(AuthContext);
@@ -35,6 +36,7 @@ const App = () => {
                     <Route path="/subscribes" element={ user ? <Subscribes/> : <Navigate to="/login" />} />
 
                     <Route path="/channel/:channel_id" element={ <ChannelProvider><Channel/></ChannelProvider> } />
+                    <Route path="/studio/:tab?" element={ true ? <Studio/> : <Navigate to="/login" /> } />
                     <Route path="/watch/:id" element={ <TagProvider><WatchVideo/></TagProvider> } />
                 </Routes>
             </BrowserRouter>

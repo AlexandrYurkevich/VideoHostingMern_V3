@@ -26,9 +26,9 @@ export default function Header() {
     <div>
       <div className="main-header">
         <div className="logo-container">
-          <IconButton aria-label="sidebar menu" sx={{p: '4px'}} onClick={()=>setSidebarOpened(true)}>
+          {user && <IconButton aria-label="sidebar menu" sx={{p: '4px'}} onClick={()=>setSidebarOpened(true)}>
             <MenuIcon fontSize="large"/>
-          </IconButton>
+          </IconButton>}
           <Link to="/">
             <button className="logo-element">
               <IoLogoReact className="logo-icon" alt="logo" />

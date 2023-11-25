@@ -1,7 +1,7 @@
 import { config } from "../shared";
 import axios from "axios";
 
-const sharedService = {
+const uploadService = {
     upload: (file, destination) => {
         let formData = new FormData();
         formData.append(destination, file);
@@ -19,5 +19,5 @@ const sharedService = {
     }
 }
 
-export default sharedService;
+export default uploadService;
 

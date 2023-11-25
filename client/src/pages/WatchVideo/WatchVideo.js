@@ -1,6 +1,7 @@
 import { config,timeformat } from "../../shared";
 import GanreBar from "../../components/GanreBar/GanreBar";
 import Header from "../../components/Header/Header";
+import Scroller from "../../components/Scroller/Scroller";
 import {AiOutlineLike, AiOutlineDislike, AiFillLike, AiFillDislike } from "react-icons/ai"
 import { Link } from "react-router-dom";
 import "./styles.css";
@@ -160,12 +161,8 @@ export default function WatchVideo() {
 
   return (
     <div className="main-container">
-      <HeaderProvider><Header/></HeaderProvider>
-      <div className="video-page" onScroll={(e)=>{
-        if (e.target.offsetHeight + e.target.scrollTop >= e.target.scrollHeight -2) {
-          onEndPage();
-        }
-      }}>
+      <Header/>
+      <Scroller className="video-page" onEndContent={onEndPage}>
         <div className="video-main">
           <div className="video-screen">
             <video className="video-screen" autoplay controls src={`${config.backendUrl}/${video?.videoUrl}`} type="video/mp4"></video>
@@ -208,7 +205,7 @@ export default function WatchVideo() {
             {videoList?.map(video =>{ return <NextVideoElement key={video._id} video={video} showDesc={false}/> })}
           </div>
         </div>
-      </div>
+      </Scroller>
     </div>
   );
 }

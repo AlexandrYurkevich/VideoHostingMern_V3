@@ -33,14 +33,12 @@ export default function Login() {
         <TextField sx={{ width: '80%' }}
           type="email"
           label="E-mail"
-          placeholder="E-mail"
           required
           inputRef={mail}
         />
         <TextField sx={{ width: '80%' }}
           type="password"
           label="Password"
-          placeholder="Password"
           required
           inputRef={password}
           inputProps={{ minLength: 6 }}

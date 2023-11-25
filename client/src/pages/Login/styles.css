@@ -10,7 +10,7 @@
 
 .auth-form {
     background: rgba(255, 255, 255, 60%);
-    border: 2px white solid;
+    border: 2px black solid;
     display: flex;
     gap: 5px;
     flex-direction: column;

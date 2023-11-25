@@ -1,20 +1,8 @@
 import express from 'express';
-import {
-    addLike, removeLike, removeDislike, addDislike,
-    getChannel, getUser,
-    addView,
-    subscribe, unsubscribe } from '../controllers/userController.js';
+import { getViewsCount } from '../controllers/videoController.js';
 
 const router = express.Router();
 
-router.get('/:userId', getUser);
-router.get('/channel/:userId', getChannel);
-router.put('/addview', addView);
-router.put('/addlike', addLike);
-router.put('/removelike', removeLike);
-router.put('/addDislike', addDislike);
-router.put('/removeDislike', removeDislike);
-router.put('/subscribe', subscribe);
-router.put('/unsubscribe', unsubscribe);
+router.get('/count/:video_id',getViewsCount);
 
 export default router;

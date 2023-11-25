@@ -2,7 +2,7 @@ import "./styles.css";
 import { ChannelContext } from "../../contexts/ChannelContext"
 import { useRef, useContext, useState } from "react";
 import videoService from "../../services/VideoService";
-import sharedService from "../../services/SharedService";
+import uploadService from "../../services/UploadService";
 
 export default function UploadForm() {
   const {
@@ -25,8 +25,8 @@ export default function UploadForm() {
       }
       setIsLoading(true);
       let videoUrl, thumbnailUrl;
-      sharedService.upload(videoFile.current.files[0], 'video').then(res=> videoUrl = res.result)
-      sharedService.upload(thumbnailFile.current.files[0], 'thumbnail').then(res=> thumbnailUrl = res.result)
+      uploadService.upload(videoFile.current.files[0], 'video').then(res=> videoUrl = res.result)
+      uploadService.upload(thumbnailFile.current.files[0], 'thumbnail').then(res=> thumbnailUrl = res.result)
       videoService.loadVideo({
         title: title.current.value,
         description: description.current.value,
@@ -47,21 +47,6 @@ export default function UploadForm() {
     <div className="upload-container">
       <form  className="uploadwindow" style={isLoading ? {'display':'none'} : {}} onSubmit={(e)=> {e.preventDefault(); onUpload()}}>
         <label style={{color: 'red'}}>{errormes}</label>
-        <div className="videoupload">
-          <div class="field-container">
-            {false && <img class="preview" src="/preview" alt="Product Image" />}
-            <input type="file" accept="image/*" style={{'display': 'none'}}/>
-            <div class="drop-zone">
-              <p>Drag and drop a video here</p>
-              <div class="camera-icon">photo_camera</div>
-            </div>
-            <button mat-raised-button color="primary" type="button">Select Image</button>
-          </div>
-          <label>Select video to upload(mp4)</label>
-          <input type="file" accept="video/mp4" required ref={videoFile} />
-          <label>Select thumbnail</label>
-          <input type="file" accept="image/png,image/jpeg" ref={thumbnailFile} />
-        </div>
         <div className="videodata">
           <div className="videodata-element">
             <label>Title</label>

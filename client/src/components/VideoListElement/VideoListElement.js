@@ -4,27 +4,18 @@ import "./styles.css";
 import { config, timeformat } from "../../shared";
 import { Link } from "react-router-dom";
 import Avatar from "@mui/material/Avatar"
+import videoService from "../../services/VideoService";
 
 export default function VideoListElement({video, showOwner}) {
   const [channel, setChannel] = useState(video.channel);
-  const [duration, setDuration] =  useState("");
+  const [viewsCount, setViewsCount] = useState(0);
+  useEffect(()=>{ videoService.getViewsCount(video._id).then(res => setViewsCount(res.count)); },[])
 
   return (
     <div className="big-video-element">
       <Link className="thumbnail-container" to={`/watch/${video._id}`}>
-        {video.thumbnail && <img className="thumbnail" src={`${config.backendUrl}/${video.thumbnail}`} alt="thumbnail"/>}
-        <video style={video.thumbnail && {display: 'none'}} className="thumbnail" src={`${config.backendUrl}/${video.videoUrl}`}
-        onLoadedMetadata={(e)=>{
-          let duration = e.target.duration;
-          let hours = Math.floor(duration / 3600);
-          let minutes = Math.floor((duration % 3600) / 60);
-          let seconds = Math.floor(duration % 60);
-          if (hours < 10) { hours = '0' + hours; }
-          if (minutes < 10) { minutes = '0' + minutes; }
-          if (seconds < 10) { seconds = '0' + seconds; }
-          setDuration((hours > 0 ? hours + ':' : '')+ minutes+':'+seconds)
-        }}></video>
-        <label className="thumbnail-duration">{duration}</label>
+        <img className="thumbnail" src={`${config.backendUrl}/${video.thumbnail_url}`} alt="thumbnail"/>
+        <label className="thumbnail-duration">{video.duration}</label>
       </Link>
       <div className="big-video-header">
         <div className="channel-element">
@@ -37,7 +28,7 @@ export default function VideoListElement({video, showOwner}) {
           <Link to={`/watch/${video._id}`}>{video.title}</Link>
           {showOwner && <Link to={`/channel/${channel?._id}`}><span>{channel?.name}</span></Link>}
           <div className="video-views-date">
-            <span>{video.views} views</span>
+            <span>{viewsCount} views</span>
             <span>•</span>
             <span>{timeformat(video.createdAt)}</span>
           </div>

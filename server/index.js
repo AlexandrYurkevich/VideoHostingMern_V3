@@ -14,7 +14,12 @@ import uploadRoutes from './routes/uploadRoutes.js';
 import subscribeRoutes from './routes/subscribeRoutes.js';
 
 const app = express();
-
+app.use('/videos', (req, res, next) => {
+  if(req.headers.origin == 'http://localhost:3000') {
+    res.header('Access-Control-Allow-Origin', '*');
+  }
+  next();
+});
 app.use(express.static('public'))
 app.use(bodyParser.json({ extended:true }))
 app.use(bodyParser.urlencoded({ extended:true }))

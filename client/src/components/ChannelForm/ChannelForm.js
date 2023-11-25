@@ -2,7 +2,7 @@ import "./styles.css";
 import { ChannelContext } from "../../contexts/ChannelContext"
 import { AuthContext } from "../../contexts/AuthContext";
 import { useRef, useContext, useState, useEffect } from "react";
-import sharedService from "../../services/SharedService";
+import uploadService from "../../services/UploadService";
 import channelService from "../../services/ChannelService";
 
 export default function ChannelForm() {
@@ -25,8 +25,8 @@ export default function ChannelForm() {
       }
       setIsLoading(true);
       let avatarPath = null, headerPath = null;
-      sharedService.upload(avatar.current.files[0], 'avatar').then(res=> avatarPath = res.result)
-      sharedService.upload(header.current.files[0], 'header').then(res=> headerPath = res.result)
+      uploadService.upload(avatar.current.files[0], 'avatar').then(res=> avatarPath = res.result)
+      uploadService.upload(header.current.files[0], 'header').then(res=> headerPath = res.result)
       channelService.editChannel(channelPage._id, {
         channel_name: channel_name.current.value,
         channel_desc: channel_desc.current.value,

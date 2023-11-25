@@ -1,13 +1,10 @@
 import Header from "../../components/Header/Header"
 import { HeaderProvider } from "../../contexts/HeaderContext";
 import VideoListElement from "../../components/VideoListElement/VideoListElement";
-import UploadForm from "../../components/UploadForm/UploadForm";
-import ChannelForm from "../../components/ChannelForm/ChannelForm";
 import "./styles.css";
 import { config } from "../../shared"
 import { AuthContext } from "../../contexts/AuthContext";
-import { ChannelContext } from "../../contexts/ChannelContext";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import videoService from "../../services/VideoService";
 import channelService from "../../services/ChannelService";
@@ -23,9 +20,8 @@ export default function Channel() {
   const [videosCount, setVideosCount] = useState(0);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [currentTab, setCurrentTab] = useState(0);
-
-  const { formHidden, setFormHidden, editHidden, setEditHidden,
-    channelPage, setChannelPage, videoList, setVideoList } = useContext(ChannelContext);
+  const [channelPage, setChannelPage] = useState(null);
+  const [videoList, setVideoList] = useState([]);
   const [fullDescOpen, setFullDescOpen] = useState(false);
 
   const ChannelDesciptionComponent = ()=> {
@@ -66,8 +62,6 @@ export default function Channel() {
 
   return (
     <div className="main-container">
-      {formHidden && <UploadForm/>}
-      {editHidden && <ChannelForm/>}
       <HeaderProvider><Header/></HeaderProvider>
       <div className="channel-container" onScroll={(e)=>{
         (e.target.offsetHeight + e.target.scrollTop >= e.target.scrollHeight) && onEndPage()
@@ -93,8 +87,8 @@ export default function Channel() {
                 <button className="subscribe-button" style={{background: isSubscribed ? "black": "red"}}>{isSubscribed ? "Subscribed" : "Subscribe"}</button>
                 :
                 <div style={{ display: "flex", gap: 5 }}>
-                  <Button variant="contained" color="secondary" sx={{borderRadius:'50px'}} onClick={()=> setEditHidden(true)}>Edit Channel View</Button>
-                  <Button variant="contained" color="secondary" sx={{borderRadius:'50px'}} onClick={()=> setEditHidden(true)}>Manage Videos</Button>
+                  <Link to = "/studio/editing"><Button variant="contained" color="secondary" sx={{borderRadius:'50px'}}>Edit Channel View</Button></Link>
+                  <Link to = "/studio/videos"><Button variant="contained" color="secondary" sx={{borderRadius:'50px'}}>Manage Videos</Button></Link>
                 </div>
               }
             </div>
