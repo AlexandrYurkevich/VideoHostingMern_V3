@@ -11,7 +11,6 @@ import { config } from "../../shared";
 import Header from "../../components/Header/Header";
 import VideoManagement from "./VideoManagement";
 import EditChannel from "./EditChannel";
-import LoadVideo from "./LoadVideo";
 
 export default function Studio() {
     const { user, channel } = useContext(AuthContext);
@@ -43,7 +42,6 @@ export default function Studio() {
                     <div className="subs"></div>
                     <div className="views"></div>
                 </div> */}
-                <LoadVideo open={true}/>
                 <div className="comments-body">
 
                 </div>

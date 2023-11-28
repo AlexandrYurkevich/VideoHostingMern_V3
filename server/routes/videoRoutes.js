@@ -1,24 +1,18 @@
 import express from 'express';
 
-import {
-  getVideo, getVideosByTag, getVideosByChannel,
-  getLikedVideos, getVideosHistory,
-  getSearch,
-  getVideosCount,
-  addVideo,
-  deleteVideo
-} from '../controllers/videoController.js';
+import { addVideo, addView, deleteVideo, editThumbnail, editVideo, getSearch, getVideo, getVideosByChannel, getVideosByFilter, getVideosHistory } from '../controllers/videoController.js';
 
 const router = express.Router();
 
-router.get('/byTag', getVideosByTag);
-router.get('/history', getVideosHistory); 
-router.get('/bychannel', getVideosByChannel); 
-router.get('/liked', getLikedVideos); 
-router.get('/search', getSearch);
-router.get('/count/:channel_id',getVideosCount);
-router.get('/:id', getVideo);
 router.post('/', addVideo);
-router.delete('/:id', deleteVideo);
+router.delete('/:video_id', deleteVideo);
+router.get('/filter', getVideosByFilter);
+router.get('/history', getVideosHistory); 
+router.get('/byChannel', getVideosByChannel);  
+router.get('/search', getSearch);
+router.post('/addView', addView)
+router.put('/editVideo/:video_id', editVideo)
+router.put('/editThumbnail/:video_id', editThumbnail)
+router.get('/:video_id', getVideo);
 
 export default router;

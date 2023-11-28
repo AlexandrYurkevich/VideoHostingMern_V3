@@ -16,7 +16,35 @@ const commentService = {
             })
         })
     },
+    getCommentsByVideo: (video_id, offset) => {
+        return new Promise((resolve, reject) => {
+            axios.get(`${config.backendUrl}/comments/byVideo`,{ params: {
+                video_id,
+                offset
+            }})
+            .then(res => {
+                resolve({ comments: res.data })
+            })
+            .catch (err => {
+                reject(new Error(err.response.data.message));
+            })
+        })
+    },
     getCommentsByChannel: (channel_id, offset) => {
+        return new Promise((resolve, reject) => {
+            axios.get(`${config.backendUrl}/comments/byChannel`,{ params: {
+                channel_id,
+                offset
+            }})
+            .then(res => {
+                resolve({ comments: res.data })
+            })
+            .catch (err => {
+                reject(new Error(err.response.data.message));
+            })
+        })
+    },
+    getCommentsOnChannel: (channel_id, offset) => {
         return new Promise((resolve, reject) => {
             axios.get(`${config.backendUrl}/comments/byChannel`,{ params: {
                 channel_id,
@@ -33,6 +61,17 @@ const commentService = {
     deleteComment: (comment_id) => {
         return new Promise((resolve, reject) => {
             axios.delete(`${config.backendUrl}/comments/${comment_id}`)
+            .catch(err => {
+                reject(new Error(err.response.data.message))
+            })
+        })
+    },
+    addComment: (video_id,channel_id, text, parent_id) => {
+        return new Promise((resolve, reject) => {
+            axios.post(`${config.backendUrl}/comments`, {video_id,channel_id, text,parent_id} )
+            .then(res => {
+                resolve({ comment: res.data })
+            })
             .catch(err => {
                 reject(new Error(err.response.data.message))
             })

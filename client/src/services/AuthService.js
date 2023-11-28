@@ -57,14 +57,14 @@ const authService = {
     },
     loadStorageUser: (stored_user_id)=> {
         return new Promise((resolve,reject)=>{
-            axios.get(`http://localhost:3001/users/${stored_user_id}`)
+            axios.get(`${config.backendUrl}/users/${stored_user_id}`)
             .then(res => { resolve({user: res.data}) })
             .catch(err => { resolve({user: null}) })
         })
     },
     loadStorageChannel: (stored_channel_id)=> {
         return new Promise((resolve,reject)=>{
-            axios.get(`http://localhost:3001/channels/${stored_channel_id}`)
+            axios.get(`${config.backendUrl}/channels/${stored_channel_id}`)
             .then(res => { resolve({channel: res.data}) })
             .catch(err => { resolve({channel: null}) })
         })

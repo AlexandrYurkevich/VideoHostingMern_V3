@@ -2,14 +2,21 @@ import { config } from "../shared";
 import axios from "axios";
 
 const subscribeService = {
-    getSubscribersCount: (channel_id) =>{
+    addSubscribe: (channel_id, who) => {
         return new Promise((resolve, reject) => {
-            axios.get(`${config.backendUrl}/subscribes/count/${channel_id}`)
-            .then(res => {
-                resolve({ count: res.data })
+            axios.put(`${config.backendUrl}/subscribes`, {channel_id, who} )
+            .catch(err => {
+                reject(new Error(err.response.data.message))
             })
-            .catch (err => {
-                reject(new Error(err.response.data.message));
+        })
+    },
+    removeSubscribe: (channel_id, who) => {
+        return new Promise((resolve, reject) => {
+            axios.delete(`${config.backendUrl}/subscribes`, {
+                params: {channel_id, who}
+            })
+            .catch(err => {
+                reject(new Error(err.response.data.message))
             })
         })
     },

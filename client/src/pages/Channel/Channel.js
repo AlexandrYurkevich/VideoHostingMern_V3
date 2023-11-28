@@ -16,13 +16,30 @@ export default function Channel() {
   const { channel_id } = useParams();
   const navigate = useNavigate();
   const { user, channel } = useContext(AuthContext);
-  const [subscribersCount, setSubscribersCount] = useState(0);
-  const [videosCount, setVideosCount] = useState(0);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [currentTab, setCurrentTab] = useState(0);
   const [channelPage, setChannelPage] = useState(null);
   const [videoList, setVideoList] = useState([]);
   const [fullDescOpen, setFullDescOpen] = useState(false);
+
+  const onTrySubscribe = () =>{
+    if(!channel) navigate("/login")
+    isSubscribed ? subscribeService.removeSubscribe(channel_id, channel._id).then(res=> setIsSubscribed(false)): subscribeService.addSubscribe(channel_id, channel._id).then(res=> setIsSubscribed(true))
+  }
+
+  const onEndPage = () => {
+    videoService.getVideosByChannel(channel_id, videoList.length).then(res => { setVideoList([...videoList, ...res.videos]); })
+    .catch (err => { console.log(err.message); })
+  };
+
+  useEffect(() => {
+    channelService.getChannel(channel_id).then(res => {
+      setChannelPage(res.channel);
+      videoService.getVideosByChannel(channel_id, 0).then(res => { setVideoList(res.videos); })
+    }).catch(err=> console.log(err.message))
+  }, [channel_id]);
+
+  useEffect(()=>{ channel && subscribeService.isSubscribed(channel_id, channel?._id).then(res=> setIsSubscribed(res.result)); }, [channel])
 
   const ChannelDesciptionComponent = ()=> {
     if(!channelPage?.channel_desc) return(<Typography variant="body1">Похоже у канала ещё нет описания.</Typography>)
@@ -41,25 +58,6 @@ export default function Channel() {
       </Dialog>
     </div>)}
 
-  const onEndPage = () => {
-    videoService.getVideosByChannel(channel_id, videoList.length)
-    .then(res => { setVideoList([...videoList, ...res.videos]); })
-    .catch (err => { console.log(err.message); })
-  };
-
-  useEffect(() => {
-    channelService.getChannel(channel_id).then(res => {
-      setChannelPage(res.channel);
-      subscribeService.getSubscribersCount(channel_id).then(res=> setSubscribersCount(res.count));
-      videoService.getVideosCount(channel_id).then(res => setVideosCount(res.count));
-      videoService.getVideosByChannel(channel_id, 0).then(res => {
-        setVideoList(res.videos);
-      })
-    }).catch(err=> console.log(err.message))
-  }, [channel_id]);
-
-  useEffect(()=>{ channel && subscribeService.isSubscribed(channel_id, channel?._id).then(res=> setIsSubscribed(res.result)); }, [channel])
-
   return (
     <div className="main-container">
       <HeaderProvider><Header/></HeaderProvider>
@@ -77,14 +75,17 @@ export default function Channel() {
               <Typography variant="h4">{channelPage?.channel_name}</Typography>
               <div style={{ display: "flex", gap: 5 }}>
                 <span>@{channel_id}</span>
-                <span>{subscribersCount} subcribers</span>
-                <span>{videosCount} videos</span>
+                <span>{channelPage?.subs_count} subcribers</span>
+                <span>{channelPage?.videos_count} videos</span>
               </div>
               <ChannelDesciptionComponent/>
               {
-                !user || channelPage?.user_id != user._id
+                channel_id != channel?._id
                 ?
-                <button className="subscribe-button" style={{background: isSubscribed ? "black": "red"}}>{isSubscribed ? "Subscribed" : "Subscribe"}</button>
+                <Button variant="contained" color="secondary" sx={{borderRadius:'50px', background: isSubscribed ? "black": "red"}}
+                onClick={()=>onTrySubscribe()}
+                >
+                  {isSubscribed ? "Subscribed" : "Subscribe"}</Button>
                 :
                 <div style={{ display: "flex", gap: 5 }}>
                   <Link to = "/studio/editing"><Button variant="contained" color="secondary" sx={{borderRadius:'50px'}}>Edit Channel View</Button></Link>
@@ -101,7 +102,7 @@ export default function Channel() {
         </Tabs>
         <div className="channel-body">
           {videoList.map(video =>{
-            return <VideoListElement video={video} showOwner={false}/>;
+            return <VideoListElement key={video._id} video={video} showOwner={false}/>;
           })}
         </div>
     </div>

@@ -13,137 +13,92 @@ import { useParams, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import { TagContext } from "../../contexts/TagContext";
 import videoService from "../../services/VideoService";
-import userService from "../../services/UserService";
+import subscribeService from "../../services/SubscribeService"
+import CommentElement from "../../components/CommentElement/CommentElement";
+import likeService from "../../services/LikeService";
+import { Avatar, Button } from "@mui/material";
+import commentService from "../../services/CommentService";
 
 export default function WatchVideo() {
-  const { id } = useParams();
-  const { selectedTagType, selectedTagValue } = useContext(TagContext);
-  const { user, setUser } =  useContext(AuthContext);
+  const { video_id } = useParams();
+  const { selected_tags, selectedTagValue } = useContext(TagContext);
+  const { user, channel } =  useContext(AuthContext);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isLiked, setIsLiked] = useState(0);
   const [video, setVideo] = useState(null);
-  const [channel, setChannel] = useState(null);
   const navigate = useNavigate();
   const [videoList, setVideoList] = useState([]);
   const [commentList, setCommentList] = useState([]);
 
-  const onLike = async ()=>{
-    try{
-      !user && navigate("/login");
-      if(user.liked?.includes(video?._id)){
-        const res = await axios.put(`${config.backendUrl}/users/removelike`, { userId: user._id, videoId: video._id });
-        setVideo(res.data.updatedVideo); setUser(res.data.updatedUser);
-      }
-      else{
-        const res = await axios.put(`${config.backendUrl}/users/addlike`, { userId: user._id, videoId: video._id });
-        setVideo(()=> { return res.data.updatedVideo });
-        setUser(()=> { return res.data.updatedUser });
-        if(user.disliked?.includes(video?._id)){
-          const res = await axios.put(`${config.backendUrl}/users/removedislike`, { userId: user._id, videoId: video._id });
-          setVideo(res.data.updatedVideo); setUser(res.data.updatedUser)
-        }
-      }
-    }
-    catch (err) {
-      console.log(err.response.data.message);
+  const onTrySubscribe = () =>{
+    if(!channel) navigate("/login")
+    isSubscribed ? subscribeService.removeSubscribe(video.channel_id, channel?._id).then(res=> setIsSubscribed(false)): subscribeService.addSubscribe(video.channel_id, channel?._id).then(res=> setIsSubscribed(true))
+  }
+  const onTryLike = () =>{
+    if(!channel) navigate("/login")
+    switch (isLiked) {
+      case 1:
+        likeService.removeLike(video_id, undefined, channel._id).then(res=> setIsLiked(0))
+        break;
+      case -1:
+        likeService.addLike(video_id, undefined, channel._id).then(res=> {setIsLiked(1); likeService.removeDislike(video_id, undefined, channel._id)})
+        break;
+      default:
+        likeService.addLike(video_id, undefined, channel._id).then(res=> setIsLiked(1))
+        break;
     }
   }
-  const onSubscribe = async ()=>{
-    try{
-      !user && navigate("/login");
-      if(user.subscribedChannels?.includes(video?.channel)){
-        const res = await axios.put(`${config.backendUrl}/users/unsubscribe`, {
-          userId: user._id,
-          channelId: video.channel
-        });
-        setChannel(res.data.updatedChannel);
-        setUser(res.data.updatedUser)
-      }
-      else{
-        const res = await axios.put(`${config.backendUrl}/users/subscribe`, {
-          userId: user._id,
-          channelId: video.channel
-        });
-        setChannel(res.data.updatedChannel);
-        setUser(res.data.updatedUser)
-      }
+  const onTryDislike = () =>{
+    if(!channel) navigate("/login")
+    switch (isLiked) {
+      case 1:
+        likeService.addDislike(video_id, undefined, channel._id).then(res=> {setIsLiked(-1); likeService.removeLike(video_id, undefined, channel._id)})
+        break;
+      case -1:
+        likeService.removeDislike(video_id, undefined, channel._id).then(res=> setIsLiked(0))
+        break;
+      default:
+        likeService.addDislike(video_id, undefined, channel._id).then(res=> setIsLiked(-1))
+        break;
     }
-    catch (err) {
-      console.log(err.response.data.message);
-    }
-  }
-  const onDislike = async ()=>{
-    try{
-      !user && navigate("/login");
-      if(user.disliked?.includes(video?._id)){
-        const res = await axios.put(`${config.backendUrl}/users/removedislike`, {
-          userId: user._id,
-          videoId: video._id
-        });
-        setVideo(res.data.updatedVideo);
-        setUser(res.data.updatedUser)
-      }
-      else{
-        const res = await axios.put(`${config.backendUrl}/users/addDislike`, {
-          userId: user._id,
-          videoId: video._id
-        });
-        setVideo(()=> { return res.data.updatedVideo });
-        setUser(()=> { return res.data.updatedUser });
-        if(user.liked?.includes(video?._id)){
-          const res = await axios.put(`${config.backendUrl}/users/removelike`, {
-            userId: user._id,
-            videoId: video._id
-          });
-          setVideo(res.data.updatedVideo);
-          setUser(res.data.updatedUser);
-        }
-      }
-    }
-    catch (err) { console.log(err.response.data.message); }
   }
 
-  const onEndPage = async () => {
-    try {
-      const res = await axios.get(`${config.backendUrl}/videos/byTag/${videoList.length}/${selectedTagType}/${selectedTagValue}`);
-      setVideoList([...videoList, ...res.data]);
-    } catch (err) { console.log(err.response.data.message); }
+  const onEndPage = () => {
+    videoService.getVideos({by_recommend: channel?._id},{}, videoList.length).then(res=>setVideoList([...videoList, ...res.videos])).catch(err => console.log(err.message));
   };
 
-  const getVideosByTag = async () => {
-    try {
-        const res = await axios.get(`${config.backendUrl}/videos/byTag/0/${selectedTagType}/${selectedTagValue}`);
-        setVideoList(res.data);
-    } catch (err) { console.log(err); }
+  const reloadVideos = () => {
+    videoService.getVideos({by_recommend: channel?._id},{}, 0).then(res=>setVideoList(res.videos)).catch(err => console.log(err.message));
   };
 
-  useEffect(()=>{ getVideosByTag(); }, [selectedTagType, selectedTagValue]);
-
+  useEffect(()=> reloadVideos(), [selected_tags]);
+  useEffect(() =>{
+    reloadVideos()
+    likeService.isLiked(video_id, channel?._id).then(res => res.result ?  setIsLiked(1) : likeService.isDisliked(video_id, channel?._id).then(res=> res.result && setIsLiked(-1)))
+  }, [channel]);
   useEffect(()=> {
-    videoService.getVideo(id)
-    .then(res => {
-      setVideo(res.video)
-      setChannel(res.channel)
-    }).catch(err => console.log(err.message))
-    getVideosByTag();
-
-    setTimeout(userService.addView(user?._id, id).then(res=> setUser(res.updatedUser)), 5000);
-  }, [id]);
+    console.log("video load - " + video_id)
+    videoService.getVideo(video_id).then(res => setVideo(res.video)).catch(err => console.log(err.message))
+    setTimeout(()=>{channel !== undefined && videoService.addView(video_id, channel?._id).then(res=> setVideo(v=> ({...v, views_count: v?.views_count + 1})))}, 10000);
+    commentService.getCommentsByVideo(video_id, 0).then(res=> setCommentList(res.comments)).catch(err => console.log(err.message));
+  }, [video_id]);
 
   const IsOwnerComponent =() => {
     return(<div>
-      {user?._id == channel?.user &&
+      {video?.channel_id == channel?._id &&
         <button className="subscribe-button" style={{ background: "black" }} onClick={
-          ()=>videoService.deleteVideo(video?._id).catch(err => { console.log(err.message) })
+          ()=>videoService.deleteVideo(video?._id).then(res=> navigate("/home")).catch(err => { console.log(err.message) })
         }>Delete Video</button>
       }
-      {user?._id != channel?.user && 
+      {video?.channel_id == channel?._id && 
         <div className="like-section">
-          <button className="like-button" onClick={()=>onLike()} style={{ borderRight: "2px grey solid" }}>
-            {user?.liked?.includes(video?._id) ? <AiFillLike className="like-icon"/> : <AiOutlineLike className="like-icon"/> }
-            {video?.likes}
+          <button className="like-button" onClick={()=>onTryLike()} style={{ borderRight: "2px grey solid" }}>
+            {isLiked==1 ? <AiFillLike className="like-icon"/> : <AiOutlineLike className="like-icon"/> }
+            {video?.likes_count}
           </button>
-          <button className="like-button" onClick={()=>onDislike()}>
-            {user?.disliked?.includes(video?._id) ? <AiFillDislike className="like-icon"/> : <AiOutlineDislike className="like-icon"/> }
-            {video?.dislikes}
+          <button className="like-button" onClick={()=>onTryDislike()}>
+            {isLiked==-1 ? <AiFillDislike className="like-icon"/> : <AiOutlineDislike className="like-icon"/> }
+            {video?.dislikes_count}
           </button>
         </div>
       }
@@ -152,17 +107,17 @@ export default function WatchVideo() {
 
   const IsSubComponent = () => {
     return(<div>
-      {user?._id != channel?.user && ( user?.subscribedChannels.includes(channel?._id)
-       ? <button className="subscribe-button" onClick={()=>onSubscribe()} style={{ background: "black" }}>Subscribed</button>
-       : <button className="subscribe-button" onClick={()=>onSubscribe()}>Subscribe</button>
-      )}
+      {video?.channel_id != channel?._id && 
+        <Button variant="contained" color="secondary" sx={{borderRadius:'50px', background: isSubscribed ? "black": "red"}}
+        onClick={()=>onTrySubscribe()}>{isSubscribed ? "Subscribed" : "Subscribe"}</Button>
+      }
     </div>)
   }
 
   return (
     <div className="main-container">
       <Header/>
-      <Scroller className="video-page" onEndContent={onEndPage}>
+      <div className="video-page" onEndContent={onEndPage}>
         <div className="video-main">
           <div className="video-screen">
             <video className="video-screen" autoplay controls src={`${config.backendUrl}/${video?.videoUrl}`} type="video/mp4"></video>
@@ -170,10 +125,13 @@ export default function WatchVideo() {
           <label style={{ fontSize: 20 }}>{video?.title}</label>
           <div className="video-header">
             <div className="author-data">
-              <img className="channel-icon" src={`${config.backendUrl}/${channel?.avatar_url}`} alt="channel" />
+              {video?.channel.avatar_url ?
+                <Avatar alt="ava" src={`${config.backendUrl}/${video?.channel.avatar_url}`}/> : 
+                <Avatar sx={{ bgcolor: video?.channel.avatar_color }}>{video?.channel.channel_name.charAt(0).toUpperCase()}</Avatar> 
+              }
               <div className="channel-data">
-                <Link to={"/channel/"+channel?._id}>{channel?.name}</Link>
-                <span>{channel?.subscribers.length} Subs</span>
+                <Link to={"/channel/"+video?.channel?._id}>{channel?.channel_name}</Link>
+                <span>{video?.channel?.subs_count} Subs</span>
               </div>
               <IsSubComponent/>
             </div>
@@ -181,7 +139,7 @@ export default function WatchVideo() {
           </div>
           <div className="video-desc">
             <div className="video-views">
-              <label>{video?.views} views</label>
+              <label>{video?.views_count} views</label>
               <label>{`Added: ${timeformat(video?.createdAt)}`}</label>
             </div>
             <div className="tags">
@@ -192,10 +150,11 @@ export default function WatchVideo() {
             </label>
           </div>
           <div className="comment-section">
-            <div className="comment-count"></div>
+            <div className="comment-count">{video?.comments_count} comments</div>
             <div className="comment-input"></div>
             <div className="comment-list">
-              {commentList?.map(comment =>{ return <label>ffsfsf</label> })}
+              <h1>sdfs</h1><h1>sdfs</h1><h1>sdfs</h1><h1>sdfs</h1>
+              {commentList?.map(comment =>{ return <CommentElement key={comment._id} comment={comment}/> })}
             </div>
           </div>
         </div>
@@ -205,7 +164,7 @@ export default function WatchVideo() {
             {videoList?.map(video =>{ return <NextVideoElement key={video._id} video={video} showDesc={false}/> })}
           </div>
         </div>
-      </Scroller>
+      </div>
     </div>
   );
 }

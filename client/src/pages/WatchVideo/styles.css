@@ -10,11 +10,11 @@
     flex-grow: 1;
     display: flex;
     overflow-y: auto;
-    background: black;
+    background:linear-gradient(rgb(255, 54, 111), rgb(255, 179, 64));
 }
 
 .video-main{
-    margin:  5px;
+    border: 5px black solid;
     width: 800px;
     height: fit-content;
     display: flex;
@@ -92,5 +92,4 @@
     min-height: 100%;
     height: fit-content;
     overflow-x: clip;
-    background:linear-gradient(rgb(255, 54, 111), rgb(255, 179, 64));
 }

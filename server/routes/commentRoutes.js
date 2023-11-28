@@ -1,20 +1,13 @@
 import express from 'express';
-import {
-    addLike, removeLike, removeDislike, addDislike,
-    getChannel, getUser,
-    addView,
-    subscribe, unsubscribe } from '../controllers/userController.js';
+import { getComment, getCommentsByVideo, getCommentsByChannel, getCommentsOnChannel, deleteComment, addComment } from '../controllers/commentController.js';
 
 const router = express.Router();
 
-router.get('/:userId', getUser);
-router.get('/channel/:userId', getChannel);
-router.put('/addview', addView);
-router.put('/addlike', addLike);
-router.put('/removelike', removeLike);
-router.put('/addDislike', addDislike);
-router.put('/removeDislike', removeDislike);
-router.put('/subscribe', subscribe);
-router.put('/unsubscribe', unsubscribe);
+router.get('/byVideo', getCommentsByVideo)
+router.get('/byChannel', getCommentsByChannel)
+router.get('/byChannel', getCommentsOnChannel)
+router.get('/:comment_id', getComment)
+router.delete('/:comment_id', deleteComment)
+router.post('/', addComment)
 
 export default router;

@@ -2,42 +2,94 @@ import { config } from "../shared";
 import axios from "axios";
 
 const likeService = {
-    tryLike: (channel_id, video_id=null,comment_id=null) => {
+    addLike: (video_id,comment_id, channel_id) => {
         return new Promise((resolve, reject) => {
-            axios.get(`${config.backendUrl}/likes/tryLike`, {params: {
-                channel_id, video_id, comment_id
-            }})
+            axios.post(`${config.backendUrl}/likes`, {video_id, comment_id, channel_id, is_dislike:false} )
             .then(res => {
-                resolve({
-                    updatedState: res.data
-                })
+                resolve({ result: res.data })
+            })
+            .catch(err => {
+                reject(new Error(err.response.data.message))
+            })
+        })
+    },
+    addDislike: (video_id,comment_id, channel_id) => {
+        return new Promise((resolve, reject) => {
+            axios.post(`${config.backendUrl}/likes`, {video_id,comment_id, channel_id, is_dislike: true} )
+            .then(res => {
+                resolve({ result: res.data })
+            })
+            .catch(err => {
+                reject(new Error(err.response.data.message))
+            })
+        })
+    },
+    removeLike: (video_id,comment_id, channel_id) => {
+        return new Promise((resolve, reject) => {
+            axios.delete(`${config.backendUrl}/likes`, {
+                params: {video_id,comment_id, channel_id, is_dislike:false}
+            })
+            .then(res => {
+                resolve({ result: res.data })
+            })
+            .catch(err => {
+                reject(new Error(err.response.data.message))
+            })
+        })
+    },
+    removeDislike: (video_id,comment_id, channel_id) => {
+        return new Promise((resolve, reject) => {
+            axios.delete(`${config.backendUrl}/likes`, {
+                params: {video_id,comment_id, channel_id, is_dislike:true }
+            })
+            .then(res => {
+                resolve({ result: res.data })
+            })
+            .catch(err => {
+                reject(new Error(err.response.data.message))
+            })
+        })
+    },
+    isLiked: (video_id,comment_id, channel_id) => {
+        return new Promise((resolve, reject) => {
+            axios.get(`${config.backendUrl}/likes/is_liked`, {
+                params: {video_id,comment_id, channel_id, is_dislike:false}
+            })
+            .then(res => {
+                resolve({ result: res.data })
             })
             .catch (err => {
                 reject(new Error(err.response.data.message));
             })
         })
     },
-    tryDislike: (channel_id, video_id=null,comment_id=null) => {
+    isDisliked: (video_id, comment_id, channel_id) => {
         return new Promise((resolve, reject) => {
-            axios.get(`${config.backendUrl}/likes/tryDislike`, {params: {
-                channel_id, video_id, comment_id
-            }})
+            axios.get(`${config.backendUrl}/likes/is_liked`, {
+                params: {video_id,comment_id, channel_id, is_dislike: true}
+            })
             .then(res => {
-                resolve({
-                    updatedState: res.data
-                })
+                resolve({ result: res.data })
             })
             .catch (err => {
                 reject(new Error(err.response.data.message));
             })
         })
     },
-    isLikedByChannel: (video_id, channel_id)=> {
-
+    getLikedVideos: (channel_id, offset) => {
+        return new Promise((resolve, reject) => {
+            axios.get(`${config.backendUrl}/likes/videos`,{ params: {
+                channel_id,
+                offset
+            }})
+            .then(res => {
+                resolve({ videos: res.data })
+            })
+            .catch (err => {
+                reject(new Error(err.response.data.message));
+            })
+        })
     },
-    isDislikedByChannel: (video_id, channel_id)=> {
-
-    }
 }
 
 export default likeService;

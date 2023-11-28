@@ -1,8 +1,8 @@
-import { Backdrop, Button, CircularProgress, Dialog, Divider, IconButton, Typography } from "@mui/material";
+import { Alert, Backdrop, Button, CircularProgress, Dialog, Divider, IconButton, Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useState } from "react";
 import videoService from "../../services/VideoService";
 import uploadService from "../../services/UploadService";
 import ThumbnailGenerator from "../../components/ThumbnailGenerator/ThumbnailGenerator";
@@ -15,6 +15,7 @@ export default function LoadVideo({open, onClose}){
     const [duration, setVideoDuration] = useState();
     const [isVideoLoading, setVideoLoading] = useState(false);
     const [title, setTitle] = useState("");
+    const [loadingFinished, setLoadingFinished] = useState(false);
     const onDrop = (e)=> {
         if (!e.dataTransfer?.files[0].type.includes('video/')) return;
         e.preventDefault();
@@ -27,20 +28,21 @@ export default function LoadVideo({open, onClose}){
         uploadService.upload(file,'video').then(res=> setVideoUrl(res.result))
     }
 
-    useEffect(()=>{
+    const completeLoading = (blob)=> {
         //new File([blob], `${Date.now()}.png`, { type: blob.type })
-        thumbnail_url && fetch(thumbnail_url).then(response => response.blob()).then(blob => uploadService.upload(blob, 'thumbnail')
+        //thumbnail_url && fetch(thumbnail_url).then(response => response.blob()).then(blob =>
+        uploadService.upload(blob, 'thumbnail')
         .then(thumbnail => {
             videoService.loadVideo({title: title,channel_id: channel?._id,video_url, thumbnail_url: thumbnail.result,duration})
-            .then().catch(err=>console.log(err.message)).finally(setVideoLoading(false));
+            .then(res=>setLoadingFinished(true)).catch(err=>console.log(err.message)).finally(setVideoLoading(false));
         }).catch(err=>console.log(err.message))
-        )
-    },[thumbnail_url])
+    }
 
     return(
       <Dialog open={open} onClose={onClose}>
+        {loadingFinished ? <Alert onClose={onClose}>Video successfully loaded. You can publish it in Video Management section on you channel's page.</Alert> :
         <div className="loadvideo-container">
-            <div className="loadvideo-header">
+            <div className="between-header">
                 <Typography variant="h5">Load Video</Typography>
                 <IconButton onClick={onClose}><CloseIcon/></IconButton>
             </div>
@@ -57,8 +59,8 @@ export default function LoadVideo({open, onClose}){
                     uploadVideo(e.target.files[0])
                 }} accept="video/*" style={{"display":"none"}} />
             </Button>
-            <ThumbnailGenerator url={video_url} onGenerated={(thumbnail)=>setThumbnailUrl(thumbnail)} onMetaLoaded={(e)=>setVideoDuration(e.target.duration)}/>
-        </div>
+            <ThumbnailGenerator url={video_url} onGeneratedBlob={(blob)=>completeLoading(blob)} onMetaLoaded={(e)=>setVideoDuration(e.target.duration)}/>
+        </div>}
         <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isVideoLoading}>
             <CircularProgress color="secondary" />
         </Backdrop>

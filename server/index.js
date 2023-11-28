@@ -10,6 +10,8 @@ import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import videoRoutes from './routes/videoRoutes.js';
 import channelRoutes from './routes/channelRoutes.js';
+import commentRoutes from './routes/commentRoutes.js';
+import likeRoutes from './routes/likeRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import subscribeRoutes from './routes/subscribeRoutes.js';
 
@@ -27,6 +29,8 @@ app.use(cors({origin: 'http://localhost:3000'}))
 app.use('/auth', authRoutes);
 app.use("/users", userRoutes);
 app.use("/videos", videoRoutes);
+app.use("/comments", commentRoutes);
+app.use("/likes",likeRoutes);
 app.use("/channels", channelRoutes);
 app.use("/upload", uploadRoutes);
 app.use("/subscribes", subscribeRoutes);

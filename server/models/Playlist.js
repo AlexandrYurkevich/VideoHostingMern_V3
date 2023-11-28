@@ -7,5 +7,11 @@ const PlaylistSchema = mongoose.Schema(
   type: {type: number, default: 0 }
 },{ timestamps: true }
 )
+PlaylistSchema.virtual('videos_count', {
+  ref: 'Video_Playlist',
+  localField: '_id',
+  foreignField: 'playlist_id',
+  count: true
+});
 const Playlist = mongoose.model('Playlist', PlaylistSchema);
 export default Playlist

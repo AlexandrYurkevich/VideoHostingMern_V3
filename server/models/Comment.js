@@ -8,5 +8,26 @@ const CommentSchema = mongoose.Schema(
   text: String
 },{ timestamps: true }
 )
+CommentSchema.virtual('channel', {
+  ref: 'Channel',
+  localField: 'channel_id',
+  foreignField: '_id',
+  justOne: true
+});
+CommentSchema.virtual('likes_count', {
+  ref: 'Like',
+  localField: '_id',
+  foreignField: 'comment_id',
+  count: true,
+  options: { $match: { is_dislike: false } }
+});
+CommentSchema.virtual('dislikes_count', {
+  ref: 'Like',
+  localField: '_id',
+  foreignField: 'comment_id',
+  count: true,
+  options: { $match: { is_dislike: true } }
+});
+
 const Comment = mongoose.model('Comment', CommentSchema);
 export default Comment

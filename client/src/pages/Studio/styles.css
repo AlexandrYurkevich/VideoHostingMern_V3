@@ -1,6 +1,7 @@
 .studio-container {
     display: flex;
     flex-grow: 1;
+    overflow-y: auto;
 }
 
 .studio-sidebar-vert {
@@ -13,6 +14,7 @@
     align-items: center;
 }
 .studio-body {
+    overflow-y: auto;
     border: 2px lightgray solid;
     padding: 5px;
     flex-grow: 1;
@@ -45,7 +47,7 @@
     align-items: center;
 }
 
-.loadvideo-header {
+.between-header {
     width: 100%;
     display: flex;
     justify-content: space-between;
