@@ -4,12 +4,15 @@ import "../../shared_styles.css";
 import { AuthContext } from "../../contexts/AuthContext"
 import { Link } from "react-router-dom";
 import authService from "../../services/AuthService";
-import { Button, Checkbox, FormControlLabel, TextField, Typography } from "@mui/material";
+import { Button, Checkbox, FormControlLabel, IconButton, InputAdornment, TextField, Typography } from "@mui/material";
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 export default function Login() {
   const mail = useRef()
   const password = useRef()
   const [saveLogin, setSaveLogin] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { setUser, setChannel } = useContext(AuthContext)
   const [errormes, setErrormes] = useState();
 
@@ -37,7 +40,14 @@ export default function Login() {
           inputRef={mail}
         />
         <TextField sx={{ width: '80%' }}
-          type="password"
+          type={showPassword ? 'text' : 'password'}
+          InputProps={{ endAdornment:
+            <InputAdornment position="end">
+              <IconButton aria-label="toggle password" onClick={()=>setShowPassword((prev)=> { return !prev})}>
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          }}
           label="Password"
           required
           inputRef={password}

@@ -54,7 +54,7 @@ export default function Channel() {
       </Typography>
       <Dialog open={fullDescOpen} onClose={()=>setFullDescOpen(false)}>
         <DialogTitle>Full description</DialogTitle>
-        <DialogContent>{channelPage?.channel_desc}</DialogContent>
+        <DialogContent style={{ wordWrap: 'break-word' }}> {channelPage?.channel_desc}</DialogContent>
       </Dialog>
     </div>)}
 

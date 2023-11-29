@@ -16,12 +16,9 @@ const videoService = {
             })
         })
     },
-    getVideosByChannel: (channel_id, offset) => {
+    getVideosByChannel: (channel_id, offset, access=false) => {
         return new Promise((resolve, reject) => {
-            axios.get(`${config.backendUrl}/videos/byChannel`,{ params: {
-                channel_id,
-                offset
-            }})
+            axios.get(`${config.backendUrl}/videos/byChannel`,{ params: {channel_id,offset,access}})
             .then(res => {
                 resolve({ videos: res.data })
             })

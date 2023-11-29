@@ -1,10 +1,13 @@
-import { Button, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, Typography } from "@mui/material";
+import { Button, IconButton, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, Typography } from "@mui/material";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
+import EditIcon from '@mui/icons-material/Edit';
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import videoService from "../../services/VideoService";
 import LoadVideo from "./LoadVideo";
 import { config, durationFormat } from "../../shared";
+import EditVideo from "./EditVideo";
 
 export default function VideoManagement() {
     const { user, channel } = useContext(AuthContext);
@@ -12,6 +15,7 @@ export default function VideoManagement() {
     const [playlistsList, setPlaylistsList] = useState([])
     const [currentTab, setCurrentTab] = useState(0);
     const [isLoadVideoOpen, setLoadVideoOpen] = useState(false)
+    const [currentEditVideo, setCurrentEditVideo] = useState("");
 
     const accessStatusFormat = (status) =>{
         switch (status) {
@@ -22,7 +26,8 @@ export default function VideoManagement() {
     }
 
     useEffect(()=>{
-        channel && videoService.getVideosByChannel(channel?._id, videosList.length).then(res=>{console.log(res.videos); setVideosList(res.videos)})
+        if(!channel){ return}
+        videoService.getVideosByChannel(channel?._id, videosList.length).then(res=>{setVideosList(res.videos)})
     },[channel])
     return(
         <div>
@@ -35,6 +40,7 @@ export default function VideoManagement() {
                 <Tab label="Playlists"/>
             </Tabs>
             <LoadVideo open={isLoadVideoOpen} onClose={()=>setLoadVideoOpen(false)}/>
+            <EditVideo video={currentEditVideo} onClose={()=>setCurrentEditVideo("")}/>
             {currentTab == 0 ?
             <div>
                 <TableContainer component={Paper}>
@@ -52,15 +58,30 @@ export default function VideoManagement() {
                         <TableBody>
                         {videosList.map((video) => {
                             return <TableRow key={video._id}>
-                                <TableCell className="thumbnail-container" to={`/watch/${video._id}`} >
-                                    <img className="next-video-thumbnail" src={`${config.backendUrl}/${video.thumbnail_url}`} alt="thumbnail"/>
-                                    <label className="thumbnail-duration">{durationFormat(video.duration)}</label>
-                                    {video.title}
+                                <TableCell>
+                                <div style={{display: 'flex'}}>
+                                    <div style={{position: 'relative', display: 'flex', flexDirection: 'column', height:'72px'}}>
+                                        <img className="video-manage-thumbnail" loading="lazy" src={`${config.backendUrl}/${video.thumbnail_url}`} alt="thumbnail"/>
+                                        <label className="manage-thumbnail-duration">{durationFormat(video.duration)}</label>
+                                    </div>
+                                    <div style={{display: 'flex', flexDirection: 'column'}}>
+                                        <Typography>{video.title}</Typography>
+                                        <div style={{display: 'flex'}}>
+                                            <IconButton onClick={()=>setCurrentEditVideo(video)}>
+                                                <EditIcon fontSize="small"/>
+                                            </IconButton>
+                                            {video.access_status > 0 && <IconButton>
+                                                <OndemandVideoIcon fontSize="small"/>
+                                            </IconButton>}
+                                        </div>
+                                    </div>
+                                </div>
                                 </TableCell>
                                 <TableCell>{accessStatusFormat(video.access_status)}</TableCell>
                                 <TableCell>{video.publishAt || "-"}</TableCell>
                                 <TableCell>{video.views_count}</TableCell>
-                                <TableCell>{video.title}</TableCell>
+                                <TableCell>{video.comments_count}</TableCell>
+                                <TableCell>{video.dislikes_count != 0 ? (video.likes_count/(video.likes_count + video.dislikes_count)*100 + "%") : "-"}</TableCell>
                             </TableRow>
                         })}
                         </TableBody>

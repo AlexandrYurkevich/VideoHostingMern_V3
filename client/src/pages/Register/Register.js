@@ -8,7 +8,9 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { Typography } from "@mui/material";
+import { IconButton, InputAdornment, Typography } from "@mui/material";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Visibility from "@mui/icons-material/Visibility";
 
 export default function Register() {
   const name = useRef()
@@ -16,6 +18,7 @@ export default function Register() {
   const password = useRef()
   const repeatPassword = useRef();
   const birthday = useRef()
+  const [showPassword, setShowPassword] = useState(false);
   const [saveLogin, setSaveLogin] = useState(false);
   const { setUser, setChannel } = useContext(AuthContext)
   const [errormes, setErrormes] = useState();
@@ -64,14 +67,28 @@ export default function Register() {
           inputRef={mail}
         />
         <TextField sx={{ width: '80%' }}
-          type="password"
+          type={showPassword ? 'text' : 'password'}
+          InputProps={{ endAdornment:
+            <InputAdornment position="end">
+              <IconButton aria-label="toggle password" onClick={()=>setShowPassword((prev)=> { return !prev})}>
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          }}
           label="Password"
           required
           inputRef={password}
           inputProps={{ minLength: 6 }}
         />
         <TextField sx={{ width: '80%' }}
-          type="password"
+          type={showPassword ? 'text' : 'password'}
+          InputProps={{ endAdornment:
+            <InputAdornment position="end">
+              <IconButton aria-label="toggle password" onClick={()=>setShowPassword((prev)=> { return !prev})}>
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          }}
           label="Repeat password"
           required
           inputRef={repeatPassword}

@@ -4,7 +4,9 @@ const PlaylistSchema = mongoose.Schema(
 {
   channel_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Channel', required: true },
   playlist_name: String,
-  type: {type: number, default: 0 }
+  playlist_desc: String,
+  access_status: Number,
+  type: {type: number, default: 0 } //0 - common, 1- jam
 },{ timestamps: true }
 )
 PlaylistSchema.virtual('videos_count', {

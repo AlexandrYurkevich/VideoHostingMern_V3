@@ -4,12 +4,14 @@ import Subscribe from "../models/Subscribe.js";
 import Channel from "../models/Channel.js";
 import Like from "../models/Like.js";
 import Comment from "../models/Comment.js";
+import WatchHistory from "../models/WatchHistory.js";
 import express from 'express';
 
 const router = express.Router();
 
 export const addVideo = async (req,res)=>{
   try {
+    console.log("addVideo - " + req.body + " - " + req.body.duration)
     const newVideo = new Video({
       title: req.body.title,
       desc: req.body.desc,
@@ -46,7 +48,7 @@ export const getVideo = async (req,res)=>{
 export const getVideosByChannel = async (req,res)=>{
     try {
       const { channel_id, offset } = req.query
-      const videos = await Video.find({channel_id}).skip(offset).limit(20).populate('channel');
+      const videos = await Video.find({channel_id}).skip(offset).limit(20).populate('channel likes_count dislikes_count comments_count views_count');
       res.status(200).json(videos);
     }
     catch (error) {
@@ -80,7 +82,7 @@ export const getVideosByFilter = async (req,res)=>{
     if(sort?.by_date) sort_params = Object.assign(sort_params, {updatedAt: sort.by_date})
     if(sort?.by_date) sort_params = Object.assign(sort_params, {updatedAt: -1})
     results = results.sort(sort_params);
-    results = await results.skip(offset).limit(20).populate('channel')
+    results = await results.skip(offset).limit(20).populate('channel likes_count dislikes_count comments_count views_count')
     res.status(200).json(results);
   }
   catch (error) { res.status(404).json({ message: error.message }) }
@@ -89,7 +91,7 @@ export const getVideosByFilter = async (req,res)=>{
 export const getVideosHistory = async (req,res)=>{
   try {
       const { channel_id, offset } = req.query
-      const videos = await WatchHistory.find({channel_id}).select('video_id').populate('video').skip(offset).limit(20);
+      const videos = await WatchHistory.distinct('video_id', {channel_id}).populate('video').sort({updatedAt: -1}).skip(offset).limit(20);
       res.status(200).json(videos);
   }
   catch (error) { res.status(404).json({ message: error.message }) }

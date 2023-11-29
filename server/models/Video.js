@@ -17,6 +17,7 @@ const VideoSchema = mongoose.Schema(
     thumbnail_url: String,
     tags: [String],
     category: String,
+    allowComments: Boolean,
     access_status: { type: Number, default: false }
   },
   { timestamps: true, toJSON: { virtuals: true } }
@@ -54,8 +55,8 @@ VideoSchema.virtual('channel', {
   justOne: true
 });
 VideoSchema.pre("findByIdAndDelete", (video)=>{
-  fs.unlinkSync(`${__dirname}'\\public\\${video.video_url}`)
-  video.thumbnail && fs.unlinkSync(`${__dirname}'\\public\\${video.thumbnail_url}`)
+  fs.unlinkSync(`${__dirname}\\public\\${video.video_url}`)
+  video.thumbnail && fs.unlinkSync(`${__dirname}\\public\\${video.thumbnail_url}`)
   //del comments, video_paylists, likes, watchhstory?, subscribes
 })
   

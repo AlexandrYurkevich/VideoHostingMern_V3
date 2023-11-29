@@ -10,7 +10,7 @@ export default function VideoListElement({video, showOwner}) {
   return (
     <div className="big-video-element">
       <Link className="thumbnail-container" to={`/watch/${video._id}`}>
-        <img className="thumbnail" src={`${config.backendUrl}/${video.thumbnail_url}`} alt="thumbnail"/>
+        <img className="thumbnail" loading="lazy" src={`${config.backendUrl}/${video.thumbnail_url}`} alt="thumbnail"/>
         <label className="thumbnail-duration">{durationFormat(video.duration)}</label>
       </Link>
       <div className="big-video-header">

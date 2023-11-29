@@ -7,6 +7,7 @@ import videoService from "../../services/VideoService";
 import uploadService from "../../services/UploadService";
 import ThumbnailGenerator from "../../components/ThumbnailGenerator/ThumbnailGenerator";
 import { AuthContext } from "../../contexts/AuthContext";
+import { config } from "../../shared";
 
 export default function LoadVideo({open, onClose}){
     const { user, channel } = useContext(AuthContext);
@@ -29,11 +30,12 @@ export default function LoadVideo({open, onClose}){
     }
 
     const completeLoading = (blob)=> {
+        console.log("complete loading");
         //new File([blob], `${Date.now()}.png`, { type: blob.type })
         //thumbnail_url && fetch(thumbnail_url).then(response => response.blob()).then(blob =>
         uploadService.upload(blob, 'thumbnail')
         .then(thumbnail => {
-            videoService.loadVideo({title: title,channel_id: channel?._id,video_url, thumbnail_url: thumbnail.result,duration})
+            videoService.loadVideo({title: title,channel_id: channel?._id,video_url, thumbnail_url: thumbnail.result,duration: duration})
             .then(res=>setLoadingFinished(true)).catch(err=>console.log(err.message)).finally(setVideoLoading(false));
         }).catch(err=>console.log(err.message))
     }
@@ -59,7 +61,7 @@ export default function LoadVideo({open, onClose}){
                     uploadVideo(e.target.files[0])
                 }} accept="video/*" style={{"display":"none"}} />
             </Button>
-            <ThumbnailGenerator url={video_url} onGeneratedBlob={(blob)=>completeLoading(blob)} onMetaLoaded={(e)=>setVideoDuration(e.target.duration)}/>
+            <ThumbnailGenerator url={video_url ? `${config.backendUrl}/${video_url}` : ''} onGeneratedBlob={(blob)=>completeLoading(blob)} onMetaLoaded={(e)=>setVideoDuration((d)=> {return e.target.duration})}/>
         </div>}
         <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isVideoLoading}>
             <CircularProgress color="secondary" />

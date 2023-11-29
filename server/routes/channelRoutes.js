@@ -3,9 +3,9 @@ import { getChannel, addRecommendedChannel, editChannel, deleteChannel, getRecom
 
 const router = express.Router();
 
-router.get('/:channel_id', getChannel)
 router.delete('/:channel_id', deleteChannel)
 router.get('/recommend/:channel_id', getRecommendedChannels)
+router.get('/:channel_id', getChannel)
 router.put('/addRecommend/:channel_id', addRecommendedChannel)
 router.put('/removeRecommend', removeRecommendedChannel)
 router.put('/edit/:channel_id', editChannel)//form

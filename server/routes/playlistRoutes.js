@@ -1,20 +1,14 @@
 import express from 'express';
-import {
-    addLike, removeLike, removeDislike, addDislike,
-    getChannel, getUser,
-    addView,
-    subscribe, unsubscribe } from '../controllers/userController.js';
+import { } from '../controllers/playlistController.js';
 
 const router = express.Router();
 
-router.get('/:userId', getUser);
-router.get('/channel/:userId', getChannel);
-router.put('/addview', addView);
-router.put('/addlike', addLike);
-router.put('/removelike', removeLike);
-router.put('/addDislike', addDislike);
-router.put('/removeDislike', removeDislike);
-router.put('/subscribe', subscribe);
-router.put('/unsubscribe', unsubscribe);
+axios.get('/videos', getPlaylistVideos)
+axios.get('/videoIds', getPlaylistVideoIds)
+axios.get('/byChannel',getPlaylistsByChannel)
+axios.get('/:playlist_id', getPlaylist)
+axios.delete('/:playlist_id', deletePlaylist)
+axios.post('/addVideos', addVideosToPlaylist)
+axios.post('/', addPlaylist)
 
 export default router;

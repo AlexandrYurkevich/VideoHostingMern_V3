@@ -34,7 +34,7 @@ const channelService = {
     },
     addRecommendedChannel: (channel_id, recommended_id) => {
         return new Promise((resolve, reject)=> {
-            axios.put(`${config.backendUrl}/channels/addRecommend/${channel_id}`, recommended_id)
+            axios.put(`${config.backendUrl}/channels/addRecommend/${channel_id}`, {recommended_id})
             .then(res => { resolve({updatedChannel: res.data}) })
             .catch(err => { reject(new Error(err.response.data.message)) })
         })
@@ -56,15 +56,15 @@ const channelService = {
     },
     editAvatar: (channel_id, new_url) => {
         return new Promise((resolve, reject)=> {
-            axios.put(`${config.backendUrl}/channels/editAvatar/${channel_id}`, new_url)
-            .then(res => { resolve({updatedChannel: res.data}) })
+            axios.put(`${config.backendUrl}/channels/editAvatar/${channel_id}`, {new_url})
+            .then(res => { resolve({new_url}) })
             .catch(err => { reject(new Error(err.response.data.message)) })
         })
     },
     editBanner: (channel_id, new_url) => {
         return new Promise((resolve, reject)=> {
-            axios.put(`${config.backendUrl}/channels/editBanner/${channel_id}`, new_url)
-            .then(res => { resolve({updatedChannel: res.data}) })
+            axios.put(`${config.backendUrl}/channels/editBanner/${channel_id}`, {new_url})
+            .then(res => { resolve({new_url}) })
             .catch(err => { reject(new Error(err.response.data.message)) })
         })
     }

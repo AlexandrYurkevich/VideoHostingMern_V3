@@ -146,7 +146,7 @@ export default function WatchVideo() {
               {video?.tags.map(tag =>{ return <span>#{tag}</span>; })}
             </div>
             <label style={{ wordWrap: "break-word" }}>
-              {video?.description}
+              {video?.description || "Похоже у видео ещё нет описания"}
             </label>
           </div>
           <div className="comment-section">

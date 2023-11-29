@@ -13,14 +13,15 @@
 }
 
 .thumbnail-container {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
 }
 
 .thumbnail-duration {
-    position: relative;
-    bottom: 28px;
+    position: absolute;
+    bottom: 8px;
     right: 6px;
     background: black;
     padding: 2px;
@@ -29,8 +30,9 @@
 }
 
 .big-video-header {
-    margin-top: -20px;
     display: flex;
+    padding: 5px;
+    gap: 5px;
 }
 
 .big-video-data {

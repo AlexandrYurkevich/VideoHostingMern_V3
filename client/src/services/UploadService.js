@@ -16,7 +16,18 @@ const uploadService = {
                 reject(new Error(err.response.data.message));
             })
         })
-    }
+    },
+    delete: (del_url) => {
+        return new Promise((resolve, reject) => {
+            axios.delete(`${config.backendUrl}/upload`, { params: {del_url} })
+            .then(res => {
+                resolve({ result: res.data })
+            })
+            .catch(err => {
+                reject(new Error(err.response.data.message))
+            })
+        })
+    },
 }
 
 export default uploadService;

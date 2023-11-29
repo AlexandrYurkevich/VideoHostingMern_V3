@@ -15,11 +15,13 @@ import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import { Badge, IconButton } from "@mui/material";
+import LoadVideo from "../../pages/Studio/LoadVideo";
 
 export default function Header() {
   const searchField = useRef();
   const navigate = useNavigate();
   const { user, channel } = useContext(AuthContext)
+  const [isLoadVideoOpen, setLoadVideoOpen] = useState(false)
   const [sidebarOpened, setSidebarOpened] = useState(false)
 
   return (
@@ -44,9 +46,10 @@ export default function Header() {
             <BsSearch className="search-img" alt="acc"/>
           </button>
         </div>
+        <LoadVideo open={isLoadVideoOpen} onClose={()=>setLoadVideoOpen(false)}/>
         {user ?
           <div className="detached-container">
-            <IconButton aria-label="add_video" sx={{p: '4px'}}>
+            <IconButton aria-label="add_video" sx={{p: '4px'}} onClick={()=>setLoadVideoOpen(true)}>
               <VideoCallIcon fontSize="large"/>
             </IconButton>
             <IconButton aria-label="notifications">

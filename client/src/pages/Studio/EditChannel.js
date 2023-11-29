@@ -1,15 +1,25 @@
 import { Avatar, Button, Tab, Tabs, TextField, Typography, useTheme } from "@mui/material";
 import { useContext, useRef, useState } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
+import channelService from "../../services/ChannelService";
+import uploadService from "../../services/UploadService";
 import { config } from "../../shared";
 
 export default function EditChannel() {
-    const { user, channel } = useContext(AuthContext);
+    const { user, channel, setChannel } = useContext(AuthContext);
     const [currentTab, setCurrentTab] = useState(0);
     const theme = useTheme();
 
     const [newName, setNewName] = useState(channel?.channel_name || "")
     const [newDesc, setNewDesc] = useState(channel?.channel_desc || "")
+    const editAvatar = (file)=> {
+        if (!file) return;
+        uploadService.upload(file,'avatar').then(res=> channelService.editAvatar(channel?._id, res.result).then(res=> setChannel(c=> ({...c, avatar_url: res.new_url}))));
+    }
+    const editBanner = (file)=> {
+        if (!file) return;
+        uploadService.upload(file,'banner').then(res=> channelService.editBanner(channel?._id, res.result).then(res=> setChannel(c=> ({...c, banner_url: res.new_url}))));
+    }
     return(
         <div>
             <Typography variant="h5">Channel Editing</Typography>
@@ -35,8 +45,8 @@ export default function EditChannel() {
                         <div className="columned-container">
                             <Typography>Use images less than 2 MB, take into account image stretching. It is recommended to use jpg and webp formats</Typography>
                             <div style={{'display':'flex'}}>
-                                <Button variant="outlined">Edit</Button>
-                                {channel?.avatar_url && <Button variant="outlined">Delete</Button>}
+                                <Button variant="outlined" component="label">Edit<input type="file" onChange={(e)=> editAvatar(e.target.files[0])} accept="image/*" style={{"display":"none"}} /></Button>
+                                {channel?.avatar_url && <Button variant="outlined" onClick={()=>channelService.editAvatar(channel?._id,null).then(res=> setChannel(c=> ({...c, avatar_url: null})))}>Delete</Button>}
                             </div>
                         </div>
                     </div>
@@ -51,10 +61,10 @@ export default function EditChannel() {
                             </div>
                         </div>
                         <div className="columned-container">
-                            <Typography>Use images less than 3 MB, it is recommended to use jpg and webp formats</Typography>
+                            <Typography>Use images less than 4 MB, it is recommended to use jpg and webp formats</Typography>
                             <div style={{'display':'flex'}}>
-                                <Button variant="outlined">Edit</Button>
-                                {channel?.avatar_url && <Button variant="outlined">Delete</Button>}
+                            <Button variant="outlined" component="label">Edit<input type="file" onChange={(e)=> editBanner(e.target.files[0])} accept="image/*" style={{"display":"none"}} /></Button>
+                                {channel?.banner_url && <Button variant="outlined" onClick={()=>channelService.editBanner(channel?._id,null).then(res=> setChannel(c=> ({...c, banner_url: null})))}>Delete</Button>}
                             </div>
                         </div>
                     </div>
@@ -76,6 +86,14 @@ export default function EditChannel() {
                         helperText={`${newDesc.length}/1000`}
                         placeholder="Tell audience about your channel"
                     />
+                </div>
+                <div style={{padding: '10px'}}>
+                    <Button variant="outlined" onClick={()=>channelService.editChannel(channel?._id, {channel_name: newName, channel_desc: newDesc})
+                    .then(res=> {
+                        setChannel(res.updatedChannel);
+                        setNewName(res.updatedChannel.channel_name);
+                        setNewDesc(res.updatedChannel.channel_desc);
+                    })}>Save changes</Button>
                 </div>
             </div>}
         </div>

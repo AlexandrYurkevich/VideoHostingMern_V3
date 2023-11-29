@@ -1,6 +1,11 @@
 import Channel from "../models/Channel.js";
 import Subscribe from "../models/Subscribe.js";
 import express from 'express';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(dirname(__filename));
 
 const router = express.Router();
 
@@ -63,7 +68,8 @@ export const editAvatar = async (req,res)=>{
     try {
         const old = await Channel.findByIdAndUpdate(req.params.channel_id,
         {$set:{ avatar_url: req.body.new_url} });
-        fs.unlinkSync(`${__dirname}'\\public\\${old.avatar_url}`)
+        console.log("edit avatar - " + old + " url - " + req.body.new_url)
+        old.avatar_url && fs.unlinkSync(`${__dirname}\\public\\${old.avatar_url}`)
         res.status(200).json(old);
     } catch (error) { res.status(404).json({ message: error.message }) }
 }
@@ -71,7 +77,7 @@ export const editBanner = async (req,res)=>{
     try {
         const old = await Channel.findByIdAndUpdate(req.params.channel_id,
         {$set:{ banner_url: req.body.new_url} });
-        fs.unlinkSync(`${__dirname}'\\public\\${old.banner_url}`)
+        old.avatar_url && fs.unlinkSync(`${__dirname}\\public\\${old.banner_url}`)
         res.status(200).json(old);
     } catch (error) { res.status(404).json({ message: error.message }) }
 }
