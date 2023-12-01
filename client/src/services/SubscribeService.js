@@ -4,7 +4,10 @@ import axios from "axios";
 const subscribeService = {
     addSubscribe: (channel_id, who) => {
         return new Promise((resolve, reject) => {
-            axios.put(`${config.backendUrl}/subscribes`, {channel_id, who} )
+            axios.post(`${config.backendUrl}/subscribes`, {channel_id, who} )
+            .then(res => {
+                resolve({ result: res.data })
+            })
             .catch(err => {
                 reject(new Error(err.response.data.message))
             })
@@ -14,6 +17,9 @@ const subscribeService = {
         return new Promise((resolve, reject) => {
             axios.delete(`${config.backendUrl}/subscribes`, {
                 params: {channel_id, who}
+            })
+            .then(res => {
+                resolve({ result: res.data })
             })
             .catch(err => {
                 reject(new Error(err.response.data.message))

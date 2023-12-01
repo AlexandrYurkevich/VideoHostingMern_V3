@@ -23,7 +23,7 @@
 }
 
 .video-manage-thumbnail {
-    width:120px;
+    min-width:120px;
     height: 72px;
     object-fit: contain;
     border-radius: 10px;
@@ -131,6 +131,7 @@
     display: flex;
     padding: 5px;
     gap: 5px;
+    align-items: center;
     overflow-x: auto;
 }
 .thumb-list::-webkit-scrollbar {

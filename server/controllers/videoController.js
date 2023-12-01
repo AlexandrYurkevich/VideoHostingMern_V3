@@ -17,7 +17,7 @@ export const addVideo = async (req,res)=>{
       desc: req.body.desc,
       video_url: req.body.video_url,
       thumbnail_url: req.body.thumbnail_url,
-      tags: req.body.tags?.split(/[\s,-.;]+/).filter(element => element),
+      tags: req.body.tags?.split(/[,;]+/).filter(element => element),
       channel_id: req.body.channel_id,
       duration: req.body.duration,
       access_status: 0
@@ -39,7 +39,7 @@ export const deleteVideo = async (req,res)=>{
 
 export const getVideo = async (req,res)=>{
   try {
-    const video = await Video.findById(req.params.video_id).populate('channel likes_count dislikes_count comments_count views_count');
+    const video = await Video.findById(req.params.video_id).populate({ path: 'channel', populate: { path: 'subs_count' } }).populate('likes_count dislikes_count comments_count views_count');
     res.status(200).json(video);
   }
   catch (error) { console.log(error.message); res.status(404).json({ message: error.message }) }
@@ -48,7 +48,7 @@ export const getVideo = async (req,res)=>{
 export const getVideosByChannel = async (req,res)=>{
     try {
       const { channel_id, offset } = req.query
-      const videos = await Video.find({channel_id}).skip(offset).limit(20).populate('channel likes_count dislikes_count comments_count views_count');
+      const videos = await Video.find({channel_id}).sort({createdAt: -1}).skip(offset).limit(20).populate('channel likes_count dislikes_count comments_count views_count');
       res.status(200).json(videos);
     }
     catch (error) {
@@ -57,8 +57,8 @@ export const getVideosByChannel = async (req,res)=>{
 }
 
 const getLastViewedChannel = async (channel_id) => {
-  const lastView = await View.findOne({channel_id}).sort({createdAt: -1});
-  return lastView.channel_id;
+  const lastWatch = await WatchHistory.findOne({channel_id}).sort({createdAt: -1}).populate('video_id');
+  return lastWatch?.video_id.channel_id;
 };
 
 const getRecommendedVideosFilter = async (channel_id) => {
@@ -72,15 +72,15 @@ export const getVideosByFilter = async (req,res)=>{
     const offset = req.query.offset;
     const filter = req.query.filter;
     const sort = req.query.sort;
-    let results = null, filter_params = {access_status: 2}, sort_params = {};
+    let results = null, filter_params = {access_status: 3}, sort_params = {};
     if(filter?.by_channel) { filter_params = Object.assign(filter_params, { channel_id: filter.by_channel }) }
     if(filter?.by_category) { filter_params = Object.assign(filter_params, { category: filter.by_category }) }
-    if(filter?.by_date) { filter_params = Object.assign(filter_params, { updatedAt: { gte: filter.by_date } }) }
+    if(filter?.by_date) { filter_params = Object.assign(filter_params, { createdAt: { gte: filter.by_date } }) }
     if(filter?.by_tags) { filter_params = Object.assign(filter_params, { tags: { $all: filter.by_tags } }) }
     if(filter?.by_recommend) { filter_params = Object.assign(filter_params, await getRecommendedVideosFilter(filter.by_recommend)) }
-    results = Video.find({$or: [filter_params, {access_status: 2}]})
-    if(sort?.by_date) sort_params = Object.assign(sort_params, {updatedAt: sort.by_date})
-    if(sort?.by_date) sort_params = Object.assign(sort_params, {updatedAt: -1})
+    results = Video.find({$or: [filter_params, {access_status: 3}]})
+    if(sort?.by_date) sort_params = Object.assign(sort_params, {createdAt: sort.by_date})
+    if(sort?.by_date) sort_params = Object.assign(sort_params, {createdAt: -1})
     results = results.sort(sort_params);
     results = await results.skip(offset).limit(20).populate('channel likes_count dislikes_count comments_count views_count')
     res.status(200).json(results);
@@ -91,7 +91,7 @@ export const getVideosByFilter = async (req,res)=>{
 export const getVideosHistory = async (req,res)=>{
   try {
       const { channel_id, offset } = req.query
-      const videos = await WatchHistory.distinct('video_id', {channel_id}).populate('video').sort({updatedAt: -1}).skip(offset).limit(20);
+      const videos = await WatchHistory.distinct('video_id', {channel_id}).populate('video').sort({createdAt: -1}).skip(offset).limit(20);
       res.status(200).json(videos);
   }
   catch (error) { res.status(404).json({ message: error.message }) }
@@ -122,6 +122,7 @@ export const addView = async (req,res)=>{
   try {
     const newView = new View(req.body);
     const created = await newView.save();
+    req.body.channel_id && WatchHistory.create(req.body);
     res.status(201).json(created);
   }
   catch (error) {
@@ -131,9 +132,7 @@ export const addView = async (req,res)=>{
 
 export const editVideo = async (req,res)=>{
   try {
-      const update = await Channel.findByIdAndUpdate(req.params.video_id,
-      {$set: req.body},
-      {new: true });
+      const update = await Video.findByIdAndUpdate(req.params.video_id, {$set: req.body}, {new: true });
       res.status(200).json(update);
   } catch (error) { res.status(404).json({ message: error.message }) }
 }

@@ -40,9 +40,9 @@ export default function Header() {
         </div>
         <div className="searchbar" role="search">
           <div className="input-box">
-            <input style={{ fontSize: 16 }} placeholder="Input here" type="text" ref={searchField}/>
+            <input style={{ fontSize: 16 }} onKeyUp={ (e)=> e.key == "Enter" && searchField.current.value && navigate("/search", {state:{pattern:searchField.current.value}})} placeholder="Input here" type="text" ref={searchField}/>
           </div>
-          <button className="search-box" onClick={ ()=> searchField.current.value && navigate("/search", {state:{pattern:searchField.current.value}})}>
+          <button className="search-box" onClick={()=> searchField.current.value && navigate("/search", {state:{pattern:searchField.current.value}})}>
             <BsSearch className="search-img" alt="acc"/>
           </button>
         </div>

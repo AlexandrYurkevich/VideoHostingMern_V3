@@ -6,7 +6,7 @@ const router = express.Router();
 
 export const getPlaylist = async (req,res)=>{
   try {
-    const playlist = await Playlist.findById(req.params.playlist_id);
+    const playlist = await Playlist.findById(req.params.playlist_id).populate({path: 'start_video', populate:{path:'video_id'}}).populate('videos_count');
     res.status(200).json(playlist);
   }
   catch (error) { res.status(404).json({ message: error.message }) }
@@ -15,14 +15,8 @@ export const getPlaylist = async (req,res)=>{
 export const getPlaylistsVideos = async (req,res)=>{
   try {
     const { playlist_id, offset } = req.query
-    const videos = await Video_Playlist.distinct('video_id', {playlist_id}).skip(offset).limit(20).populate({
-    path: 'video_id',
-    populate: {
-      path: 'channel',
-      model: 'Channel'
-    },
-  });
-    res.status(200).json(videos);
+    const videos = await Video_Playlist.find({playlist_id}).skip(offset).limit(20).populate({ path: 'video_id', populate: { path: 'channel' } });
+    res.status(200).json(videos.map(v=> v.video_id));
   }
   catch (error) {
     res.status(404).json({ message: error.message })
@@ -43,7 +37,7 @@ export const getPlaylistsVideoIds = async (req,res)=>{
 export const getPlaylistsByChannel = async (req,res)=>{
     try {
       const { channel_id, offset } = req.query
-      const playlists = await Playlist.find({channel_id}).skip(offset).limit(20);
+      const playlists = await Playlist.find({channel_id}).sort({createdAt: -1}).skip(offset).limit(20).populate({path: 'start_video', populate:{path:'video_id'}}).populate('videos_count');
       res.status(200).json(playlists);
     }
     catch (error) {
@@ -61,11 +55,12 @@ export const deletePlaylist = async (req,res)=>{
 
 export const addPlaylist = async (req,res)=>{
   try {
-    const {playlist_name, channel_id, start_videos} = req.query;
-    const playlist = await Playlist.create({playlist_name, channel_id});
+    const {playlist_name, playlist_desc, access_status, channel_id, start_videos} = req.body;
+    const playlist = await Playlist.create({playlist_name, playlist_desc, access_status, channel_id});
     const videoPlaylists = start_videos.map((video_id) => ({ playlist_id: playlist._id, video_id }));
-    await VideoPlaylist.create(videoPlaylists);
-    res.status(201).json({...playlist, videos_count: videoPlaylists.length});
+    await Video_Playlist.create(videoPlaylists);
+    console.log(videoPlaylists)
+    res.status(201).json({...playlist._doc, videos_count: videoPlaylists.length});
   }
   catch (error) {
     res.status(400).json({ message: error.message });
@@ -74,7 +69,7 @@ export const addPlaylist = async (req,res)=>{
 
 export const addVideosToPlaylist = async (req,res)=>{
   try {
-    const {playlist_id, add_videos} = req.query;
+    const {playlist_id, add_videos} = req.body;
     const videoPlaylists = add_videos.map((video_id) => ({ playlist_id, video_id }));
     await VideoPlaylist.create(videoPlaylists);
     res.status(201).json(videoPlaylists.length);
@@ -83,18 +78,5 @@ export const addVideosToPlaylist = async (req,res)=>{
     res.status(400).json({ message: error.message });
   }
 }
-
-    
-    addVideosToPlaylist: (playlist_id, add_videos) => {
-        return new Promise((resolve, reject) => {
-            axios.post(`${config.backendUrl}/playlists/addVideos`, {playlist_id, add_videos} )
-            .then(res => {
-                resolve({ playlist: res.data })
-            })
-            .catch(err => {
-                reject(new Error(err.response.data.message))
-            })
-        })
-    }
 
 export default router;

@@ -9,7 +9,7 @@ const channelSchema = mongoose.Schema(
         avatar_color: String,
         channel_name: { type: String, required: true, unique: true },
         channel_desc: String,
-        recommended_channels: [{ type: Schema.Types.ObjectId, ref: 'Channel' }]
+        watch_later_playlist_id: { type: Schema.Types.ObjectId, ref: 'Playlist' }
     },{ timestamps: true, toJSON: { virtuals: true } }
 )
 channelSchema.virtual('subs_count', {

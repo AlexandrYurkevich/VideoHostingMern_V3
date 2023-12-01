@@ -12,7 +12,7 @@ export default function ThumbnailGenerator({url, onGeneratedUrl, onGeneratedBlob
             onGeneratedUrl && onGeneratedUrl(canvas.toDataURL('image/png'))
             onGeneratedBlob && canvas.toBlob((blob)=> { onGeneratedBlob(blob) }, 'image/png');
         }
-        else{ console.log("not ready"); setTimeout(()=> { tryGenerate() }, 1000) }
+        else{ console.log("not ready"); setTimeout(()=> { tryGenerate() }, 1200) }
     }
     return(
         <div>

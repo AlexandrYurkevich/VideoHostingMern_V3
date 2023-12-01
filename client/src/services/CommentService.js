@@ -30,6 +30,20 @@ const commentService = {
             })
         })
     },
+    getCommentsByComment: (comment_id, offset) => {
+        return new Promise((resolve, reject) => {
+            axios.get(`${config.backendUrl}/comments/byComment`,{ params: {
+                comment_id,
+                offset
+            }})
+            .then(res => {
+                resolve({ comments: res.data })
+            })
+            .catch (err => {
+                reject(new Error(err.response.data.message));
+            })
+        })
+    },
     getCommentsByChannel: (channel_id, offset) => {
         return new Promise((resolve, reject) => {
             axios.get(`${config.backendUrl}/comments/byChannel`,{ params: {

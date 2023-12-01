@@ -37,7 +37,7 @@ const App = () => {
 
                     <Route path="/channel/:channel_id" element={ <ChannelProvider><Channel/></ChannelProvider> } />
                     <Route path="/studio/:tab?" element={ true ? <Studio/> : <Navigate to="/login" /> } />
-                    <Route path="/watch/:video_id" element={ <TagProvider><WatchVideo/></TagProvider> } />
+                    <Route path="/watch/:video_id/:playlist_id?/:playlist_order?" element={ <TagProvider><WatchVideo/></TagProvider> } />
                 </Routes>
             </BrowserRouter>
         </ThemeProvider>

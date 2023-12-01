@@ -16,6 +16,7 @@
 .video-main{
     border: 5px black solid;
     width: 800px;
+    padding-left: 40px;
     height: fit-content;
     display: flex;
     gap: 5px;
@@ -25,7 +26,10 @@
 .video-screen {
     width: 800px;
     height: 440px;
-    background: grey;
+    background: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .video-header{
@@ -41,14 +45,6 @@
 .channel-data {
     display: flex;
     flex-direction: column;
-}
-.subscribe-button {
-    height: 36px;
-    width: 80px;
-    border-radius: 15px;
-    background: red;
-    color: white;
-    cursor: pointer;
 }
 
 .like-section {
@@ -72,9 +68,14 @@
     font-size: 1.5em;
 }
 
+.video-title {
+    font-size: 20px;
+    word-wrap: break-word;
+}
 .video-desc {
-    background:lightgray;
+    background:rgb(231, 231, 231);
     border-radius: 15px;
+    margin-top: 10px;
     padding: 5px;
     display: flex;
     flex-direction: column;
@@ -92,4 +93,44 @@
     min-height: 100%;
     height: fit-content;
     overflow-x: clip;
+}
+
+.playlist-header {
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    background: black;
+    color:white
+}
+.playlist-bar {
+    height: 310px;
+    overflow-y: auto;
+    background: white
+}
+
+.playlist-bar::-webkit-scrollbar {
+    width: 5px;
+    height: 8px;
+    background-color: #ffb340;
+}
+
+.playlist-bar::-webkit-scrollbar-thumb {
+    background: #ff366f;
+    border-radius: 2px;
+}
+
+.comment-input-container {
+    display: flex;
+    gap: 5px;
+    padding: 5px;
+}
+
+.comment-input {
+    display: flex;
+    flex-direction: column;
+}
+.comment-input-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap:5px;
 }

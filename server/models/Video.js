@@ -17,8 +17,9 @@ const VideoSchema = mongoose.Schema(
     thumbnail_url: String,
     tags: [String],
     category: String,
-    allowComments: Boolean,
-    access_status: { type: Number, default: false }
+    adult_content: Boolean,
+    allow_comments: Boolean,
+    access_status: { type: Number, default: 0 }
   },
   { timestamps: true, toJSON: { virtuals: true } }
 );

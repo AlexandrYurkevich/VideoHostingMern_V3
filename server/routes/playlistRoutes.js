@@ -1,14 +1,14 @@
 import express from 'express';
-import { } from '../controllers/playlistController.js';
+import { addPlaylist, addVideosToPlaylist, deletePlaylist, getPlaylist, getPlaylistsByChannel, getPlaylistsVideoIds, getPlaylistsVideos } from '../controllers/playlistController.js';
 
 const router = express.Router();
 
-axios.get('/videos', getPlaylistVideos)
-axios.get('/videoIds', getPlaylistVideoIds)
-axios.get('/byChannel',getPlaylistsByChannel)
-axios.get('/:playlist_id', getPlaylist)
-axios.delete('/:playlist_id', deletePlaylist)
-axios.post('/addVideos', addVideosToPlaylist)
-axios.post('/', addPlaylist)
+router.get('/videos', getPlaylistsVideos)
+router.get('/videoIds', getPlaylistsVideoIds)
+router.get('/byChannel',getPlaylistsByChannel)
+router.get('/:playlist_id', getPlaylist)
+router.delete('/:playlist_id', deletePlaylist)
+router.post('/addVideos', addVideosToPlaylist)
+router.post('/', addPlaylist)
 
 export default router;

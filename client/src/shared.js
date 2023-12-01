@@ -22,3 +22,10 @@ export const durationFormat = (duration = 0)=>{
     if (seconds < 10) { seconds = '0' + seconds; }
     return((hours > 0 ? hours + ':' : '')+ minutes+':'+seconds)
 }
+export const accessStatusFormat = (status) =>{
+    switch (status) {
+        case 0: return "Черновик"
+        case 1: return "Доступ по ссылке"
+        default: return "Общий доступ"
+    }
+}

@@ -6,7 +6,7 @@ const CommentSchema = mongoose.Schema(
   channel_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Channel', required: true },
   parent_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' },
   text: String
-},{ timestamps: true }
+},{ timestamps: true, toJSON: { virtuals: true } }
 )
 CommentSchema.virtual('channel', {
   ref: 'Channel',
@@ -14,19 +14,25 @@ CommentSchema.virtual('channel', {
   foreignField: '_id',
   justOne: true
 });
+CommentSchema.virtual('answers_count', {
+  ref: 'Comment',
+  localField: '_id',
+  foreignField: 'parent_id',
+  count: true
+});
 CommentSchema.virtual('likes_count', {
   ref: 'Like',
   localField: '_id',
   foreignField: 'comment_id',
   count: true,
-  options: { $match: { is_dislike: false } }
+  $match: { is_dislike: false }
 });
 CommentSchema.virtual('dislikes_count', {
   ref: 'Like',
   localField: '_id',
   foreignField: 'comment_id',
   count: true,
-  options: { $match: { is_dislike: true } }
+  $match: { is_dislike: true }
 });
 
 const Comment = mongoose.model('Comment', CommentSchema);

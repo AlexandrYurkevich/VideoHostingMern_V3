@@ -68,9 +68,9 @@ const playlistService = {
             })
         })
     },
-    addPlaylist: (playlist_name, channel_id, start_videos) => {
+    addPlaylist: (playlist_name, playlist_desc, access_status, channel_id, start_videos) => {
         return new Promise((resolve, reject) => {
-            axios.post(`${config.backendUrl}/playlists`, {playlist_name, channel_id, start_videos} )
+            axios.post(`${config.backendUrl}/playlists`, {playlist_name, playlist_desc, access_status, channel_id, start_videos} )
             .then(res => {
                 resolve({ playlist: res.data })
             })
@@ -78,7 +78,7 @@ const playlistService = {
                 reject(new Error(err.response.data.message))
             })
         })
-    }
+    },
     addVideosToPlaylist: (playlist_id, add_videos) => {
         return new Promise((resolve, reject) => {
             axios.post(`${config.backendUrl}/playlists/addVideos`, {playlist_id, add_videos} )
