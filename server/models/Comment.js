@@ -34,6 +34,15 @@ CommentSchema.virtual('dislikes_count', {
   count: true,
   $match: { is_dislike: true }
 });
+CommentSchema.pre('findOneAndDelete', async function (next) {
+  const сomment = await this.model.findOne(this.getQuery());
+  if (!сomment) { return next(); }
+  try {
+    await Comment.deleteMany({ parent_id: сomment._id });
+    await Like.deleteMany({ comment_id: сomment._id });
+    next();
+  } catch (error) { return next(error); }
+});
 
 const Comment = mongoose.model('Comment', CommentSchema);
 export default Comment

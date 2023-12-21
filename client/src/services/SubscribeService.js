@@ -32,7 +32,7 @@ const subscribeService = {
                 params: {sub_channel_id, who}
             })
             .then(res => {
-                resolve({ result: res.data })
+                resolve({ result: res.data!==null ? true : false })
             })
             .catch (err => {
                 reject(new Error(err.response.data.message));

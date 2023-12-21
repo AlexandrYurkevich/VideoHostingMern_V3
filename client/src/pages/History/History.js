@@ -9,29 +9,23 @@ import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useParams } from "react-router-dom";
+import videoService from "../../services/VideoService";
 
 
 export default function History() {
-  const { user } = useContext(AuthContext);
+  const { channel } = useContext(AuthContext);
   const [videoList, setVideoList] = useState([]);
 
   useEffect(() => {
-    const getVideosHistory = async () => {
-      try {
-          const res = await axios.get(`${config.backendUrl}/videos/history/${user._id}/${videoList.length}`);
-          setVideoList(res.data.history);
-      }
-      catch (err) {
-          console.log(err.data);
-      }
-    };
-    getVideosHistory();
-  }, []);
+    videoService.getHistory(channel?._id, 0).then(res => {setVideoList(res.videos)})
+  }, [channel]);
 
   return (
     <div className="main-container">
-      <HeaderProvider><Header/></HeaderProvider>
-      <div className="video-list">
+      <Header/>
+      <div className="video-list" onScroll={(e)=>{
+        (e.target.offsetHeight + e.target.scrollTop >= e.target.scrollHeight-2) && videoService.getHistory(channel._id, videoList.length).then(res => setVideoList([...videoList,res.videos]))
+      }}>
         {videoList?.map(video =>{ return <NextVideoElement video={video} showDesc={true}/> })}
       </div>
     </div>

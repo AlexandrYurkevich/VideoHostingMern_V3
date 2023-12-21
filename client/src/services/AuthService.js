@@ -11,7 +11,7 @@ const authService = {
             name: params.name,
             email: params.email,
             password : params.password,
-            birthday: params.birthday
+            birthdate: params.birthday
         }).then(res => {
             if(saveLogin){
                 localStorage.setItem("reacttube-user", JSON.stringify(res.data.user._id))

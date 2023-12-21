@@ -21,6 +21,14 @@ PlaylistSchema.virtual('start_video', {
   justOne: true,
   sort: {createdAt: -1}
 });
+PlaylistSchema.pre('findOneAndDelete', async function (next) {
+  const deletedPlaylist = await this.model.findOne(this.getQuery());
+  if (!deletedPlaylist) { return next(); }
+  try {
+    await this.model('Video_Playlist').deleteMany({ playlist_id: deletedPlaylist._id });
+    next();
+  } catch (error) { return next(error); }
+});
 
 const Playlist = mongoose.model('Playlist', PlaylistSchema);
 export default Playlist

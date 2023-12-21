@@ -2,8 +2,6 @@ import "./styles.css";
 import "../../shared_styles.css"
 import { config } from "../../shared";
 import { useContext, useRef, useState } from "react";
-import { Redirect, useNavigate } from "react-router-dom";
-import {BsSearch } from "react-icons/bs"
 import { IoLogoReact } from "react-icons/io5"
 import HiddenContainer from "../HiddenContainer/HiddenContainer";
 
@@ -16,10 +14,9 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import { Badge, IconButton } from "@mui/material";
 import LoadVideo from "../../pages/Studio/LoadVideo";
+import SearchBar from "../SearchBar/SearchBar";
 
 export default function Header() {
-  const searchField = useRef();
-  const navigate = useNavigate();
   const { user, channel } = useContext(AuthContext)
   const [isLoadVideoOpen, setLoadVideoOpen] = useState(false)
   const [sidebarOpened, setSidebarOpened] = useState(false)
@@ -38,23 +35,16 @@ export default function Header() {
             </button>
           </Link>
         </div>
-        <div className="searchbar" role="search">
-          <div className="input-box">
-            <input style={{ fontSize: 16 }} onKeyUp={ (e)=> e.key == "Enter" && searchField.current.value && navigate("/search", {state:{pattern:searchField.current.value}})} placeholder="Input here" type="text" ref={searchField}/>
-          </div>
-          <button className="search-box" onClick={()=> searchField.current.value && navigate("/search", {state:{pattern:searchField.current.value}})}>
-            <BsSearch className="search-img" alt="acc"/>
-          </button>
-        </div>
+        <SearchBar/>
         <LoadVideo open={isLoadVideoOpen} onClose={()=>setLoadVideoOpen(false)}/>
         {user ?
           <div className="detached-container">
             <IconButton aria-label="add_video" sx={{p: '4px'}} onClick={()=>setLoadVideoOpen(true)}>
               <VideoCallIcon fontSize="large"/>
             </IconButton>
-            <IconButton aria-label="notifications">
+            {/* <IconButton aria-label="notifications">
               <Badge badgeContent={0} color="primary"><NotificationsIcon /></Badge>
-            </IconButton>
+            </IconButton> */}
             <Link to = {`/channel/${channel?._id}`}>
             {channel?.avatar_url ?
               <Avatar alt="ava" src={`${config.backendUrl}/${channel?.avatar_url}`}/> : 

@@ -21,7 +21,7 @@ import NextPlaylistElement from "../../components/NextVideoElement/NextPlaylistE
 export default function WatchVideo() {
   const params = useParams();
   const video_id = params.video_id, playlist_id = params.playlist_id, playlist_order = parseInt(params.playlist_order);
-  const { selected_tags, selectedTagValue } = useContext(TagContext);
+  const { selectedTagsFilter, selectedTagsSort } = useContext(TagContext);
   const { user, channel } =  useContext(AuthContext);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isLiked, setIsLiked] = useState(0);
@@ -74,14 +74,14 @@ export default function WatchVideo() {
   }
 
   const onEndPage = () => {
-    videoService.getVideos({by_recommend: channel?._id},{}, videoList.length).then(res=>setVideoList([...videoList, ...res.videos])).catch(err => console.log(err.message));
+    videoService.getVideos(selectedTagsFilter,selectedTagsSort, videoList.length).then(res=>setVideoList([...videoList, ...res.videos])).catch(err => console.log(err.message));
   };
   const onEndPlaylist = () =>{
     playlistService.getPlaylistVideos(playlist_id, playlistVideoList.length).then(res=> setPlaylistVideoList((prev) => [...prev, ...res.videos]));
   }
 
   const reloadVideos = () => {
-    videoService.getVideos({by_recommend: channel?._id},{}, 0).then(res=>setVideoList(res.videos)).catch(err => console.log(err.message));
+    videoService.getVideos(selectedTagsFilter,selectedTagsSort, 0).then(res=>setVideoList(res.videos)).catch(err => console.log(err.message));
   };
   const onNewComment = () => {
     if(!channel){ navigate("/login"); return;}
@@ -115,14 +115,18 @@ export default function WatchVideo() {
   }
   const isVideoVisible = () => video != null && video.access_status > 0 && (video.access_status > 1 || video.channel_id == channel?._id)
 
-  useEffect(()=> reloadVideos(), [selected_tags]);
+  useEffect(()=> reloadVideos(), [selectedTagsFilter,selectedTagsSort]);
   useEffect(() =>{
     reloadVideos()
+
+    console.log(video?.channel_id  + " -ssss "+ channel?._id) 
+    channel && subscribeService.isSubscribed(video?.channel_id, channel?._id).then(res=> setIsSubscribed(res.result))
     likeService.isLiked(video_id,undefined, channel?._id).then(res => res.result ?  setIsLiked(1) : likeService.isDisliked(video_id, undefined,channel?._id).then(res=> res.result && setIsLiked(-1)))
-  }, [channel]);
+  }, [video,channel,video_id]);
   useEffect(()=> {
     console.log("video load - " + video_id)
     setViewAdded(false)
+    setIsLiked()
     videoService.getVideo(video_id).then(res => setVideo(res.video)).catch(err => console.log(err.message))
     if(playlist_id){
       playlistService.getPlaylist(playlist_id).then(res=> setPlaylist(res.playlist)).catch(err => console.log(err.message));
@@ -156,13 +160,13 @@ export default function WatchVideo() {
         onClick={()=>navigate("/studio/videos") }>Manage Videos</Button>
           <Button variant="contained" sx={{borderRadius:'50px', background: "black"}}
         onClick={
-          ()=>videoService.deleteVideo(video?._id).then(res=> navigate("/home")).catch(err => { console.log(err.message) })
+          ()=>videoService.deleteVideo(video?._id).then(res=> navigate("/")).catch(err => { console.log(err.message) })
         }>Delete Video</Button>
         </div>}
     </div>)
   }
 
-  return (channel === undefined || video == null ? "" : 
+  return (channel === undefined || video == null || video_id == undefined ? "" : 
     <div className="main-container">
       <Header/>
       <div className="video-page" onScroll={(e)=>(e.target.offsetHeight + e.target.scrollTop >= e.target.scrollHeight - 2) && onEndPage()}>
@@ -244,7 +248,7 @@ export default function WatchVideo() {
           {playlist_id && <div className="playlist-bar" onScroll={(e)=>(e.target.offsetHeight + e.target.scrollTop >= e.target.scrollHeight - 2) && onEndPlaylist()}>
             {playlistVideoList?.map((video,index) =>{ return <NextPlaylistElement key={video._id} video={video} playlist={playlist_id} playlist_order={index} showSelect={playlist_order == index}/> })}
           </div>}
-          <GanreBar tags={video?.tags} author={channel}/>
+          <GanreBar video={video}/>
           <div>
             {videoList?.map(video =>{ return <NextVideoElement key={video._id} video={video} showDesc={false}/> })}
           </div>

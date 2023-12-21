@@ -25,7 +25,9 @@ export default function CommentElement({video, comment,onParentAnswer}){
         if(!channel){ navigate("/login"); return;}
         commentService.addComment(video._id, channel?._id, newComment, comment.parent_id ? comment.parent_id : comment._id).then(res=> {console.log(res.comment);
             if(onParentAnswer) { onParentAnswer(res.comment) }
-            else { setAnswersList([...answersList, res.comment]); comment.answers_count++; }
+            else {
+                answersList.length == 0 && commentService.getCommentsByComment(comment._id, 0).then(res=> setAnswersList(res.comments));
+                setAnswersList([...answersList, res.comment]); comment.answers_count++; }
             video.comments_count++;
         }).finally(setAnswerOpen(false));
     }
@@ -111,7 +113,7 @@ export default function CommentElement({video, comment,onParentAnswer}){
             {answersOpen && answersList?.map(coment =>{ return <CommentElement style={{marginLeft: "40px"}} key={coment._id} video={video} comment={coment}
             onParentAnswer={(com)=>{setAnswersList([...answersList,com]); comment.answers_count++;}}/> })}
             {answersOpen &&answersList.length < comment.answers_count && <Button onClick={()=>commentService.getCommentsByComment(comment._id, answersList.length)
-                    .then(res=> setAnswersList([...answersList, ...res.comments])).catch(err => console.log(err.message))}>Load More</Button>}
+                    .then(res=> setAnswersList([...answersList, ...res.comments])).catch(err => console.log(err.message))}>Load Answers</Button>}
         </div>
     </div>)
 }

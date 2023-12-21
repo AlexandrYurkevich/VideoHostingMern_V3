@@ -28,6 +28,7 @@ const videoService = {
         })
     },
     getVideos: (filter, sort, offset) => {
+        console.log(filter +" - "+ sort);
         return new Promise((resolve, reject) => {
             axios.get(`${config.backendUrl}/videos/filter`,{ params: { filter, sort, offset }})
             .then(res => {
@@ -38,9 +39,28 @@ const videoService = {
             })
         })
     },
+    getHistory: (channel_id, offset) =>{
+        return new Promise((resolve, reject) => {
+            axios.get(`${config.backendUrl}/videos/history`, { params: {channel_id, offset}})
+            .then(res => {
+                resolve({ videos: res.data })
+            })
+            .catch (err => { reject(new Error(err.response.data.message)); })
+        })
+    },
+    getSearch: (pattern, offset, channel_id, user_age)=>{
+        return new Promise((resolve, reject) => {
+            axios.get(`${config.backendUrl}/videos/search`, { params: {pattern, offset, channel_id, user_age}})
+            .then(res => { resolve({ videos: res.data }) })
+            .catch (err => { reject(new Error(err.response.data.message)); })
+        })
+    },
     deleteVideo: (video_id) => {
         return new Promise((resolve, reject) => {
             axios.delete(`${config.backendUrl}/videos/${video_id}`)
+            .then(res => {
+                resolve({del: res.data})
+            })
             .catch(err => {
                 reject(new Error(err.response.data.message))
             })

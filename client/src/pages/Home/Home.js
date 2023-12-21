@@ -5,22 +5,24 @@ import VideoListElement from "../../components/VideoListElement/VideoListElement
 import { useState, useEffect, useContext } from "react";
 import videoService from "../../services/VideoService";
 import { AuthContext } from "../../contexts/AuthContext";
+import { TagContext } from "../../contexts/TagContext";
 
 
 export default function Home() {
   const { user, channel } = useContext(AuthContext);
-  const [selected_tags, setSelectedTags] = useState([]);
+  const { selectedTagsFilter, selectedTagsSort } = useContext(TagContext)
   const [videoList, setVideoList] = useState([]);
 
   const onEndPage = () => {
-    videoService.getVideos({by_recommend: channel?._id},{by_date:-1}, videoList.length).then(res=>setVideoList([...videoList, ...res.videos])).catch(err => console.log(err.message));
+    videoService.getVideos(selectedTagsFilter,selectedTagsSort, videoList.length).then(res=>setVideoList([...videoList, ...res.videos])).catch(err => console.log(err.message));
   };
 
   const reloadVideos = () => {
-    videoService.getVideos({by_recommend: channel?._id},{by_date:-1}, 0).then(res=>setVideoList(res.videos)).catch(err => console.log(err.message));
+    console.log("reload")
+    videoService.getVideos(selectedTagsFilter,selectedTagsSort, 0).then(res=>setVideoList(res.videos)).catch(err => console.log(err.message));
   };
 
-  useEffect(()=> reloadVideos(), [selected_tags]);
+  useEffect(()=> reloadVideos(), [selectedTagsFilter,selectedTagsSort]);
   useEffect(() => reloadVideos(), [channel]);
 
   return (

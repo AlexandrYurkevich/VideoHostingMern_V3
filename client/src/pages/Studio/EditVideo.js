@@ -23,6 +23,7 @@ export default function EditVideo({video, onClose, onComplete}){
     const [accessStatus, setAccessStatus] = useState(3);
 
     useEffect(()=>{
+        setThumblist([]);
         setNewName(video.title || "");
         setNewDesc(video.desc || "");
         setSelectedUrl(video.thumbnail_url);

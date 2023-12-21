@@ -28,18 +28,9 @@ export default function Register() {
       setErrormes("Repeat password correctly");
       return;
     }
-    authService.register({
-        name: name.current.value,
-        email: mail.current.value,
-        password : password.current.value,
-        birthday: birthday.current.value
-    }, saveLogin).then(res => {
-      setUser(res.user);
-      setChannel(res.channel);
-    })
-    .catch(err => {
-      setErrormes(err.message);
-    })
+    authService.register({ name: name.current.value, email: mail.current.value, password : password.current.value, birthday: birthday.current.value
+    }, saveLogin).then(res => { setUser(res.user); setChannel(res.channel); })
+    .catch(err => { setErrormes(err.message); })
   }
   
   return (

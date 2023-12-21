@@ -74,7 +74,7 @@ export default function Channel() {
 
   return (
     <div className="main-container">
-      <HeaderProvider><Header/></HeaderProvider>
+      <Header/>
       <div className="channel-container" onScroll={(e)=>{
         (e.target.offsetHeight + e.target.scrollTop >= e.target.scrollHeight) && onEndPage()
       }}>
@@ -115,11 +115,11 @@ export default function Channel() {
           <Tab label="Playlists"/>
         </Tabs>
         <div className="channel-body">
-          {currentTab == 1 ? videoList.map(video =>{
-            return <VideoListElement key={video._id} video={video} showOwner={false}/>;
+          {currentTab == 2 ? playlistList.map(playlist =>{
+            return <PlaylistListElement key={playlist._id} video={playlist.start_video?.video_id} playlist={playlist} playlist_order={0}/>;
           }) :
-          playlistList.map(playlist =>{
-            return <PlaylistListElement key={playlist._id} video={playlist.start_video.video_id} playlist={playlist} playlist_order={0}/>;
+          videoList.map(video =>{
+            return <VideoListElement key={video._id} video={video} showOwner={false}/>;
           })
           }
         </div>

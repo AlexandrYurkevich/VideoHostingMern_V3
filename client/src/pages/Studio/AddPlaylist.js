@@ -22,19 +22,19 @@ export default function AddPlaylist({open, onClose, onComplete}){
         setLoading(true);
         playlistService.addPlaylist(newName, newDesc, accessStatus, channel._id, selectedList.map(p=>p._id)).then(res=>{onComplete(res.playlist); onClose();}).finally(setLoading(false))
     }
-    useEffect(()=>{
+    const handleClose = ()=>{
         setLoading(false);
         setLoadingFinished(false);
         setSelectedList([]);
-    },[]);
+    }
 
     return(
-      <Dialog open={open} onClose={onClose}>
-        {loadingFinished ? <Alert onClose={onClose}>Playlist successfully created.</Alert> :
+      <Dialog open={open} onClose={handleClose}>
+        {loadingFinished ? <Alert onClose={handleClose}>Playlist successfully created.</Alert> :
         <form className="loadvideo-container" onSubmit={(e)=> handleSubmit(e)}>
             <div className="between-header">
                 <Typography variant="h5">Add Playlist</Typography>
-                <IconButton onClick={onClose}><CloseIcon/></IconButton>
+                <IconButton onClick={handleClose}><CloseIcon/></IconButton>
             </div>
             <Divider/>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>

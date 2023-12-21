@@ -29,12 +29,13 @@ export default function LoadVideo({open, onClose}){
         setVideoLoading(true);
         uploadService.upload(file,'video').then(res=> setVideoUrl(res.result))
     }
-    useEffect(()=>{
+    const handleClose = () =>{
         setVideoUrl();
         setThumbnailUrl();
         setVideoLoading(false);
         setLoadingFinished(false);
-    },[]);
+        onClose();
+    }
 
     const completeLoading = (blob)=> {
         //new File([blob], `${Date.now()}.png`, { type: blob.type })
@@ -47,12 +48,12 @@ export default function LoadVideo({open, onClose}){
     }
 
     return(
-      <Dialog open={open} onClose={onClose}>
-        {loadingFinished ? <Alert onClose={onClose}>Video successfully loaded. You can publish it in Video Management section on you channel's page.</Alert> :
+      <Dialog open={open} onClose={handleClose}>
+        {loadingFinished ? <Alert onClose={handleClose}>Video successfully loaded. You can publish it in Video Management section on you channel's page.</Alert> :
         <div className="loadvideo-container">
             <div className="between-header">
                 <Typography variant="h5">Load Video</Typography>
-                <IconButton onClick={onClose}><CloseIcon/></IconButton>
+                <IconButton onClick={handleClose}><CloseIcon/></IconButton>
             </div>
             <Divider/>
             <div className="drop-zone" onDragOver={(e)=>e.preventDefault()} onDrop={onDrop}>

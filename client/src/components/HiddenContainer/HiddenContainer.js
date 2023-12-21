@@ -44,14 +44,6 @@ export default function HiddenContainer({open,onClose}) {
         <ListItemIcon><HistoryIcon fontSize="large"/></ListItemIcon>
         <ListItemText primary="History" />
       </ListItemButton></Link>
-      <Link to="/history"><ListItemButton>
-        <ListItemIcon><AccessTimeIcon fontSize="large"/></ListItemIcon>
-        <ListItemText primary="Watch Later" />
-      </ListItemButton></Link>
-      <Link to="/history"><ListItemButton>
-        <ListItemIcon><ThumbUpIcon fontSize="large"/></ListItemIcon>
-        <ListItemText primary="Liked by me" />
-      </ListItemButton></Link>
       {user && <ListItemButton onClick={()=>{
           setUser(null);
           setChannel(null);
@@ -64,9 +56,6 @@ export default function HiddenContainer({open,onClose}) {
         <ListItemIcon><LogoutIcon fontSize="large"/></ListItemIcon>
         <ListItemText primary="Logout" />
       </ListItemButton>}
-      <Divider sx={{marginTop:'10px',marginBottom:'10px'}}/>
-      <ListSubheader component="div">Subscribes</ListSubheader>
-      {}
       </List>
     </Drawer>
     // <div className="hidden-container">

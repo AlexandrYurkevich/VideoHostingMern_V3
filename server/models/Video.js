@@ -3,6 +3,10 @@ import fs from 'fs';
 import View from "../models/View.js";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import Like from './Like.js';
+import Comment from './Comment.js';
+import WatchHistory from './WatchHistory.js';
+import Video_Playlist from './Video_Playlist.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(dirname(__filename));
@@ -55,11 +59,22 @@ VideoSchema.virtual('channel', {
   foreignField: '_id',
   justOne: true
 });
-VideoSchema.pre("findByIdAndDelete", (video)=>{
-  fs.unlinkSync(`${__dirname}\\public\\${video.video_url}`)
-  video.thumbnail && fs.unlinkSync(`${__dirname}\\public\\${video.thumbnail_url}`)
-  //del comments, video_paylists, likes, watchhstory?, subscribes
-})
+VideoSchema.pre('findOneAndDelete', async function (next) {
+  const video = await this.model.findOne(this.getQuery());
+  if (!video) { return next(); }
+  try {
+    const videoFilePath = `${__dirname}\\public\\${video.video_url}`
+    fs.unlink(videoFilePath, (err) => { if (err) { console.error(`Error deleting video file: ${err}`); } });
+    const thumbnailFilePath = `${__dirname}\\public\\${video.thumbnail_url}`
+    fs.unlink(thumbnailFilePath, (err) => { if (err) { console.error(`Error deleting thumbnail file: ${err}`); } });
+    await Comment.deleteMany({ video_id: video._id });
+    await Like.deleteMany({ video_id: video._id });
+    await View.deleteMany({ video_id: video._id });
+    await Video_Playlist.deleteMany({ video_id: video._id });
+    await WatchHistory.deleteMany({ video_id: video._id });
+    next();
+  } catch (error) { return next(error); }
+});
   
 const Video = mongoose.model('Video', VideoSchema);
 export default Video

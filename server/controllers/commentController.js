@@ -4,6 +4,7 @@ import express from 'express';
 import Comment from '../models/Comment.js';
 import Video from '../models/Video.js';
 import Channel from '../models/Channel.js'
+import Notification from '../models/Notification.js';
 const router = express.Router();
 
 export const getComment = async (req,res)=>{
@@ -76,6 +77,7 @@ export const addComment = async (req,res)=>{
     const newComment = new Comment(req.body);
     await newComment.populate('channel likes_count dislikes_count')
     const created = await newComment.save();
+    await Notification.create({channel_id:req.body.channel_id, comment_id:created._id, video_id:req.body.video_id})
     res.status(201).json(created);
   }
   catch (error) {
