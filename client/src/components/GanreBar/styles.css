@@ -7,7 +7,7 @@
     padding: 15px;
     gap: 5px;
     overflow-x: auto;
-    background: black;
+    /* background: black; */
 }
 
 .flex-ganre::-webkit-scrollbar {

@@ -10,7 +10,7 @@ export default function GanreBar({video}) {
   const { selectedTagsFilter, setSelectedTagsFilter, selectedTagsSort, setSelectedTagsSort } = useContext(TagContext)
   const [tagsList, setTagsList] = useState([]);
   useEffect(()=>{
-    setSelectedTagsFilter((prevFilter)=>{ return {...prevFilter, by_age: (Math.floor(((new Date).getFullYear() - (new Date(user.birthdate).getFullYear()))/31556952000))}})
+    setSelectedTagsFilter((prevFilter)=>{ return {...prevFilter, by_age: (Math.floor(((new Date).getFullYear() - (new Date(user?.birthdate).getFullYear()))/31556952000))}})
   },[user])
   useEffect(()=>{
     setSelectedTagsFilter((prevFilter)=>{ return {...prevFilter, by_access: channel?._id}})

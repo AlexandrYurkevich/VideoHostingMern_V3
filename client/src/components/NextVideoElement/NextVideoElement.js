@@ -3,11 +3,11 @@ import { config, durationFormat, timeformat } from "../../shared";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import videoService from "../../services/VideoService";
-import { Typography } from "@mui/material";
+import { Card, Typography } from "@mui/material";
 
 export default function NextVideoElement({video, showDesc}) {
   return (
-    <div className="next-video-element">
+    <Card className="next-video-element">
       <Link className="next-thumbnail-container" to={`/watch/${video._id}`} >
         <img className="next-video-thumbnail" src={`${config.backendUrl}/${video.thumbnail_url}`} alt="thumbnail"/>
         <label className="thumbnail-duration">{durationFormat(video.duration)}</label>
@@ -25,6 +25,6 @@ export default function NextVideoElement({video, showDesc}) {
         })}</div>
         {showDesc && <label>{video.description}</label>}
       </div>
-    </div>
+    </Card>
   );
 }

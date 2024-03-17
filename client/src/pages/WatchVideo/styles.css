@@ -10,11 +10,11 @@
     flex-grow: 1;
     display: flex;
     overflow-y: auto;
-    background:linear-gradient(rgb(255, 54, 111), rgb(255, 179, 64));
+    /* background:linear-gradient(rgb(255, 54, 111), rgb(255, 179, 64)); */
 }
 
 .video-main{
-    border: 5px black solid;
+    /* border: 5px black solid; */
     width: 800px;
     padding-left: 40px;
     height: fit-content;
@@ -90,6 +90,7 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    padding-right: 40px;
     min-height: 100%;
     height: fit-content;
     overflow-x: clip;
@@ -111,7 +112,7 @@
 .playlist-bar::-webkit-scrollbar {
     width: 5px;
     height: 8px;
-    background-color: #ffb340;
+    background-color: black;
 }
 
 .playlist-bar::-webkit-scrollbar-thumb {
