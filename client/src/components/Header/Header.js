@@ -1,18 +1,17 @@
-import "./styles.css";
-import "../../shared_styles.css"
+import { useContext, useState } from "react";
+import { IoLogoReact } from "react-icons/io5";
 import { config } from "../../shared";
-import { useContext, useRef, useState } from "react";
-import { IoLogoReact } from "react-icons/io5"
+import "../../shared_styles.css";
 import HiddenContainer from "../HiddenContainer/HiddenContainer";
+import "./styles.css";
 
-import { AuthContext } from "../../contexts/AuthContext";
-import { Link } from "react-router-dom";
-import Button from "@mui/material/Button";
-import Avatar from "@mui/material/Avatar";
 import MenuIcon from '@mui/icons-material/Menu';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
-import { Badge, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
+import { AuthContext } from "../../contexts/AuthContext";
 import LoadVideo from "../../pages/Studio/LoadVideo";
 import SearchBar from "../SearchBar/SearchBar";
 

@@ -1,11 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import { VscAccount } from "react-icons/vsc"
-import "./styles.css";
-import { config, durationFormat, timeformat } from "../../shared";
-import { Link } from "react-router-dom";
-import Avatar from "@mui/material/Avatar"
-import videoService from "../../services/VideoService";
 import { Typography } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
+import { Link } from "react-router-dom";
+import { config, durationFormat, timeformat } from "../../shared";
+import "./styles.css";
 
 export default function VideoListElement({video, showOwner}) {
   return (

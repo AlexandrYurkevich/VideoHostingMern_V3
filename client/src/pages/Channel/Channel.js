@@ -1,23 +1,22 @@
-import Header from "../../components/Header/Header"
-import { HeaderProvider } from "../../contexts/HeaderContext";
-import VideoListElement from "../../components/VideoListElement/VideoListElement";
-import "./styles.css";
-import { config } from "../../shared"
-import { AuthContext } from "../../contexts/AuthContext";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { useEffect, useState, useContext } from "react";
-import videoService from "../../services/VideoService";
-import channelService from "../../services/ChannelService";
-import subscribeService from "../../services/SubscribeService";
-import { Button, Avatar, Dialog, DialogContent, DialogTitle, Tab, Tabs, Typography, TextField } from "@mui/material";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import { Avatar, Button, Dialog, DialogContent, DialogTitle, Tab, Tabs, Typography } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import Header from "../../components/Header/Header";
 import PlaylistListElement from "../../components/VideoListElement/PlaylistListElement";
+import VideoListElement from "../../components/VideoListElement/VideoListElement";
+import { AuthContext } from "../../contexts/AuthContext";
+import channelService from "../../services/ChannelService";
 import playlistService from "../../services/PlaylistService";
+import subscribeService from "../../services/SubscribeService";
+import videoService from "../../services/VideoService";
+import { config } from "../../shared";
+import "./styles.css";
 
 export default function Channel() {
   const { channel_id } = useParams();
   const navigate = useNavigate();
-  const { user, channel } = useContext(AuthContext);
+  const { channel } = useContext(AuthContext);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [currentTab, setCurrentTab] = useState(0);
   const [channelPage, setChannelPage] = useState(null);
@@ -53,7 +52,7 @@ export default function Channel() {
     }).catch(err=> console.log(err.message))
   }, [channel_id]);
 
-  useEffect(()=>{ channel && subscribeService.isSubscribed(channel_id, channel?._id).then(res=> setIsSubscribed(res.result)); }, [channel])
+  useEffect(()=>{ channel && subscribeService.isSubscribed(channel_id, channel?._id).then(res=> setIsSubscribed(res.result)); }, [channel, channel_id])
 
   const ChannelDesciptionComponent = ()=> {
     if(!channelPage?.channel_desc) return(<Typography variant="body1">Похоже у канала ещё нет описания.</Typography>)
@@ -78,7 +77,7 @@ export default function Channel() {
       <div className="channel-container" onScroll={(e)=>{
         (e.target.offsetHeight + e.target.scrollTop >= e.target.scrollHeight) && onEndPage()
       }}>
-        {channelPage?.banner_url && <img className="channel-banner" src= {`${config.backendUrl}/${channelPage?.banner_url}`}/>}
+        {channelPage?.banner_url && <img className="channel-banner" src= {`${config.backendUrl}/${channelPage?.banner_url}`} alt="banner"/>}
         <div className="channel-main">
           <div style={{ display: "flex", gap: 10 }}>
             {channelPage?.avatar_url ? 

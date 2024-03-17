@@ -1,17 +1,15 @@
-import "./styles.css";
-import { IoLogoReact } from "react-icons/io5"
-import { Link } from "react-router-dom";
-import { AuthContext } from "../../contexts/AuthContext"
-import { useContext } from "react";
-import MenuIcon from '@mui/icons-material/Menu';
-import HomeIcon from '@mui/icons-material/Home';
-import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
-import LogoutIcon from '@mui/icons-material/Logout';
-import VideoCameraFrontIcon from '@mui/icons-material/VideoCameraFront';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import HistoryIcon from '@mui/icons-material/History';
-import { Divider, Drawer, IconButton, List, ListItemButton, ListItemIcon, ListItemText, ListSubheader } from "@mui/material";
+import HomeIcon from '@mui/icons-material/Home';
+import LogoutIcon from '@mui/icons-material/Logout';
+import MenuIcon from '@mui/icons-material/Menu';
+import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
+import VideoCameraFrontIcon from '@mui/icons-material/VideoCameraFront';
+import { Divider, Drawer, IconButton, List, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import { useContext } from "react";
+import { IoLogoReact } from "react-icons/io5";
+import { Link } from "react-router-dom";
+import { AuthContext } from "../../contexts/AuthContext";
+import "./styles.css";
 
 export default function HiddenContainer({open,onClose}) {
   const { user, channel, setUser, setChannel } = useContext(AuthContext);

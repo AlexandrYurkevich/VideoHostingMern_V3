@@ -1,14 +1,9 @@
-import "./styles.css";
-import { config } from "../../shared"
-import Header from "../../components/Header/Header"
-import GanreBar from "../../components/GanreBar/GanreBar"
+import Header from "../../components/Header/Header";
 import NextVideoElement from "../../components/NextVideoElement/NextVideoElement";
-import { HeaderProvider } from "../../contexts/HeaderContext";
+import "./styles.css";
 
-import { useState, useEffect, useContext } from "react";
-import axios from "axios";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
-import { useParams } from "react-router-dom";
 import videoService from "../../services/VideoService";
 
 

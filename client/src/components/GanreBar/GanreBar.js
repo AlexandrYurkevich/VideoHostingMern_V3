@@ -1,16 +1,15 @@
-import "./styles.css";
-import { TagContext } from "../../contexts/TagContext";
+import { Button } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, IconButton, Radio, RadioGroup } from "@mui/material";
-import TuneIcon from '@mui/icons-material/Tune';
 import { AuthContext } from "../../contexts/AuthContext";
+import { TagContext } from "../../contexts/TagContext";
+import "./styles.css";
 
 export default function GanreBar({video}) {
   const { user, channel } =  useContext(AuthContext);
-  const { selectedTagsFilter, setSelectedTagsFilter, selectedTagsSort, setSelectedTagsSort } = useContext(TagContext)
+  const { selectedTagsFilter, setSelectedTagsFilter, setSelectedTagsSort } = useContext(TagContext)
   const [tagsList, setTagsList] = useState([]);
   useEffect(()=>{
-    setSelectedTagsFilter((prevFilter)=>{ return {...prevFilter, by_age: (Math.floor(((new Date).getFullYear() - (new Date(user?.birthdate).getFullYear()))/31556952000))}})
+    setSelectedTagsFilter((prevFilter)=>{ return {...prevFilter, by_age: (Math.floor(((new Date()).getFullYear() - (new Date(user?.birthdate).getFullYear()))/31556952000))}})
   },[user])
   useEffect(()=>{
     setSelectedTagsFilter((prevFilter)=>{ return {...prevFilter, by_access: channel?._id}})
@@ -45,7 +44,7 @@ export default function GanreBar({video}) {
       <Button sx={{borderRadius:"20px",minWidth:"fit-content", color:"white"}} variant="contained"
       onClick={()=> {setSelectedTagsSort({duration: 1})}}>Сортировать по длительности</Button>
       <Button sx={{borderRadius:"20px",minWidth:"fit-content", color:"white"}} variant="contained" color={selectedTagsFilter=={}?"primary":"secondary"}
-      onClick={()=> {setSelectedTagsFilter({by_access: channel?._id, by_age: Math.floor(((new Date) - user?.birthdate)/31556952000)})}}>All</Button>
+      onClick={()=> {setSelectedTagsFilter({by_access: channel?._id, by_age: Math.floor(((new Date()) - user?.birthdate)/31556952000)})}}>All</Button>
       {video && <Button sx={{borderRadius:"20px",minWidth:"fit-content", color:"white"}} variant="contained" color={selectedTagsFilter.hasOwnProperty('by_channel')?"primary":"secondary"}
       onClick={()=> handleChannel(video.channel_id)}>Author: {video.channel.channel_name}</Button>}
       {channel && <Button sx={{borderRadius:"20px",minWidth:"fit-content", color:"white"}} variant="contained" color={selectedTagsFilter.hasOwnProperty('by_recommend')?"primary":"secondary"}

@@ -1,9 +1,7 @@
-import "./styles.css";
-import { config, durationFormat, timeformat } from "../../shared";
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import videoService from "../../services/VideoService";
 import { Card, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
+import { config, durationFormat, timeformat } from "../../shared";
+import "./styles.css";
 
 export default function NextVideoElement({video, showDesc}) {
   return (

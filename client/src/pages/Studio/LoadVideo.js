@@ -1,12 +1,12 @@
-import { Alert, Backdrop, Button, CircularProgress, Dialog, Divider, IconButton, Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
-import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import { useContext, useEffect, useRef, useState } from "react";
-import videoService from "../../services/VideoService";
-import uploadService from "../../services/UploadService";
+import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
+import { Alert, Backdrop, Button, CircularProgress, Dialog, Divider, IconButton, Typography } from "@mui/material";
+import { useContext, useRef, useState } from "react";
 import ThumbnailGenerator from "../../components/ThumbnailGenerator/ThumbnailGenerator";
 import { AuthContext } from "../../contexts/AuthContext";
+import uploadService from "../../services/UploadService";
+import videoService from "../../services/VideoService";
 import { config } from "../../shared";
 
 export default function LoadVideo({open, onClose}){

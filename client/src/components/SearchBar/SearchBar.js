@@ -1,6 +1,6 @@
 import { Autocomplete, debounce, TextField } from "@mui/material";
 import axios from "axios";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { config } from "../../shared";
